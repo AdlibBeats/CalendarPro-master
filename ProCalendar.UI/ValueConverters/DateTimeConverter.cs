@@ -15,4 +15,13 @@ namespace ProCalendar.UI.ValueConverters
         public object ConvertBack(object value, Type targetType, object parameter, string language) =>
             String.IsNullOrEmpty(value as String) ? DateTime.MinValue : DateTime.Parse(value as String);
     }
+
+    public class DateTimeConverter2 : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language) =>
+            String.Format("{0:Y}", (DateTime)value);
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+            String.IsNullOrEmpty(value as String) ? DateTime.MinValue : DateTime.Parse(value as String);
+    }
 }

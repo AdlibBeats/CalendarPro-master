@@ -13,9 +13,11 @@ namespace ProCalendar.UI.Controls
     public class CalendarToggleButtonEventArgs : RoutedEventArgs
     {
         public bool IsChecked { get; }
-        public CalendarToggleButtonEventArgs(bool isChecked)
+        public DateTimeModel DateTimeModel { get; }
+        public CalendarToggleButtonEventArgs(bool isChecked, DateTimeModel dateTimeModel)
         {
             IsChecked = isChecked;
+            DateTimeModel = dateTimeModel;
         }
     }
 
@@ -90,7 +92,10 @@ namespace ProCalendar.UI.Controls
 
         private void OnIsCheckedChangedHandler()
         {
-            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(this.IsChecked));
+            var dataContext = this.DataContext as DateTimeModel;
+            if (dataContext == null) return;
+
+            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(this.IsChecked, dataContext));
         }
 
         private void ContentControl_PointerPressed(object sender, PointerRoutedEventArgs e)

@@ -25,11 +25,9 @@ namespace ProCalendar.UI.Controls
         }
     }
 
-    public delegate void PanelsEventHandler(object sender, PanelsEventArgs args);
-
     public class AdaptiveGridView : Control
     {
-        public event PanelsEventHandler ItemsPanelRootLoaded;
+        public event RoutedEventHandler ItemsPanelRootLoaded;
         public AdaptiveGridView()
         {
             this.DefaultStyleKey = typeof(AdaptiveGridView);
@@ -76,6 +74,7 @@ namespace ProCalendar.UI.Controls
                 if (content == null) return;
                 
                 ItemsPanelRoot.Children.Add(content);
+                ItemsPanelRoot.UpdateLayout();
 
                 column++;
                 if (column != this.ColumnsCount)
@@ -88,11 +87,9 @@ namespace ProCalendar.UI.Controls
             }
         }
 
-        private FrameworkElement LoadItemTemplateContent(int gridColumn, int gridRow, object content)
+        private FrameworkElement LoadItemTemplateContent(int gridColumn, int gridRow, object dataContext)
         {
-            if (this.ItemTemplate == null) return null;
-
-            var itemControl = this.ItemTemplate.LoadContent() as Control;
+            var itemControl = this.ItemTemplate?.LoadContent() as Control;
             if (itemControl == null) return null;
 
             var toggleButton = itemControl as CalendarToggleButton;
@@ -102,7 +99,10 @@ namespace ProCalendar.UI.Controls
                 {
                     var ev = e as CalendarToggleButtonEventArgs;
                     if (ev != null)
+                    {
+                        Debug.Write(ev.DateTimeModel.DateTime + ":");
                         Debug.WriteLine(ev.IsChecked);
+                    }
                 };
             }
 
@@ -116,7 +116,7 @@ namespace ProCalendar.UI.Controls
             itemControl.Margin = this.ItemMargin;
             itemControl.Padding = this.ItemPadding;
 
-            itemControl.DataContext = content;
+            itemControl.DataContext = dataContext;
 
             Grid.SetColumn(itemControl, gridColumn);
             Grid.SetRow(itemControl, gridRow);

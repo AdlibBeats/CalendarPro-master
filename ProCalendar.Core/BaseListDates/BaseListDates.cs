@@ -45,7 +45,9 @@ namespace ProCalendar.Core.BaseListDates
             if (obj is DateTime)
             {
                 var dateTime = (DateTime)obj;
-                if (this.DateTime.Year == dateTime.Year && this.DateTime.Month == dateTime.Month && this.DateTime.Day == dateTime.Day)
+                if (this.DateTime.Year == dateTime.Year &&
+                    this.DateTime.Month == dateTime.Month &&
+                    this.DateTime.Day == dateTime.Day)
                     return true;
                 else
                     return false;

@@ -10,8 +10,9 @@
     </ResourceDictionary.MergedDictionaries>
 
     <converters:DateTimeConverter x:Key="dateTimeConverter"/>
+    <converters:DateTimeConverter2 x:Key="dateTimeConverter2"/>
 
-    <data:ListDates x:Key="data"/>
+    <data:ListDates x:Key="data" />
 
     <Style TargetType="controls:ProCalendar">
         <Setter Property="Margin" Value="0"/>
@@ -44,17 +45,42 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            <!--<Button
+                                Margin="0"
+                                Padding="0"
+                                Background="White"
+                                BorderBrush="Gray"
+                                BorderThickness="0.5"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="Left"
+                                VerticalContentAlignment="Center">
+                                <Button.Content>
+                                    <TextBlock
+                                        Margin="5,0"
+                                        Foreground="Black"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        TextAlignment="Left"
+                                        Text="{Binding CurrentDay.DateTime.Now, Mode=OneWay}"/>
+                                </Button.Content>
+                            </Button>-->
+                            <Border Grid.Row="0" Background="White" BorderBrush="Gray" BorderThickness="0.5" Height="40"/>
+                            <TextBlock Grid.Row="0" Margin="5,0" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Left"
+                                     Text="{Binding CurrentDay.DateTime.Now, Mode=OneWay}"/>
                             <TextBlock
-                                Grid.Row="0"
+                                Grid.Row="1"
                                 FontSize="24"
+                                Margin="5,0"
                                 VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                TextAlignment="Center" Margin="1"
-                                Text="{Binding CurrentDay.DateTime, Mode=OneWay}"/>
+                                HorizontalAlignment="Left"
+                                TextAlignment="Center"
+                                Text="{Binding CurrentDay.DateTime.Now, Converter={StaticResource dateTimeConverter2}, Mode=OneWay}"/>
                             <controls:AdaptiveGridView
                                 Margin="0"
-                                Grid.Row="1"
+                                Grid.Row="2"
                                 ColumnsCount="7"
                                 RowsCount="1"
                                 ItemHeight="36"
@@ -76,7 +102,7 @@
                         <controls:AdaptiveGridView
                             x:Name="ContentGrid"
                             Margin="0"
-                            Grid.Row="2"
+                            Grid.Row="3"
                             ColumnsCount="7"
                             RowsCount="6"
                             ItemHeight="36"
