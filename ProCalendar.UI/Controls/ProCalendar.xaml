@@ -67,20 +67,27 @@
                                         Text="{Binding CurrentDay.DateTime.Now, Mode=OneWay}"/>
                                 </Button.Content>
                             </Button>-->
-                            <Border Grid.Row="0" Background="White" BorderBrush="Gray" BorderThickness="0.5" Height="40"/>
-                            <TextBlock Grid.Row="0" Margin="5,0" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Left"
-                                     Text="{Binding CurrentDay.DateTime.Now, Mode=OneWay}"/>
-                            <TextBlock
-                                Grid.Row="1"
-                                FontSize="24"
-                                Margin="5,0"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Left"
-                                TextAlignment="Center"
-                                Text="{Binding CurrentDay.DateTime.Now, Converter={StaticResource dateTimeConverter2}, Mode=OneWay}"/>
+                            <!--<Border Grid.Row="0" Background="White" BorderBrush="Gray" BorderThickness="0.5" Height="40"/>-->
+                            <!--<TextBlock Grid.Row="0" Margin="5,0" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Left"
+                                     Text="{Binding CurrentDay.DateTime.Now, Mode=OneWay}"/>-->
+
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    FontSize="24"
+                                    Margin="5,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    TextAlignment="Center"
+                                    Text="{Binding CurrentDay.DateTime.Now, Converter={StaticResource dateTimeConverter2}, Mode=OneWay}"/>
+                            </Grid>
                             <controls:AdaptiveGridView
                                 Margin="0"
-                                Grid.Row="2"
+                                Grid.Row="1"
                                 ColumnsCount="7"
                                 RowsCount="1"
                                 ItemHeight="36"
@@ -100,9 +107,9 @@
                             </controls:AdaptiveGridView>
                         </Grid>
                         <controls:AdaptiveGridView
-                            x:Name="ContentGrid"
+                            x:Name="ContentRoot"
                             Margin="0"
-                            Grid.Row="3"
+                            Grid.Row="2"
                             ColumnsCount="7"
                             RowsCount="6"
                             ItemHeight="36"

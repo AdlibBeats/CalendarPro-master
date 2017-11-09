@@ -40,6 +40,18 @@ namespace ProCalendar.UI.Controls
             _rootGrid = this.GetTemplateChild("Root") as Grid;
 
             _contentGrid = this.GetTemplateChild("ContentRoot") as AdaptiveGridView;
+            if (_contentGrid == null) return;
+
+            _contentGrid.SelectionChanged += (sender, e) =>
+            {
+                var ev = e as SelectedItemEventArgs;
+                if (ev == null) return;
+
+                var dateTimeModel = ev.SelectedItem.DataContext as DateTimeModel;
+                if (dateTimeModel == null) return;
+
+                Debug.WriteLine(dateTimeModel.DateTime);
+            };
         }
 
         protected override Size ArrangeOverride(Size finalSize)

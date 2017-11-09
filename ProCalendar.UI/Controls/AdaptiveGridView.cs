@@ -16,6 +16,14 @@ using Windows.UI.Xaml.Media;
 
 namespace ProCalendar.UI.Controls
 {
+    public enum AdaptiveGridViewSelectionMode
+    {
+        None,
+        Single,
+        Multiple,
+        Extended
+    }
+
     public sealed class PanelsEventArgs : RoutedEventArgs
     {
         public IEnumerable<Panel> Panels { get; }
@@ -25,9 +33,20 @@ namespace ProCalendar.UI.Controls
         }
     }
 
+    public sealed class SelectedItemEventArgs : RoutedEventArgs
+    {
+        public CalendarToggleButton SelectedItem { get; }
+        public SelectedItemEventArgs(CalendarToggleButton selectedItem)
+        {
+            SelectedItem = selectedItem;
+        }
+    }
+
     public class AdaptiveGridView : Control
     {
+
         public event RoutedEventHandler ItemsPanelRootLoaded;
+        public event RoutedEventHandler SelectionChanged;
         public AdaptiveGridView()
         {
             this.DefaultStyleKey = typeof(AdaptiveGridView);
@@ -98,10 +117,14 @@ namespace ProCalendar.UI.Controls
                 toggleButton.Checked += (sender, e) =>
                 {
                     var ev = e as CalendarToggleButtonEventArgs;
-                    if (ev != null)
+                    if (ev == null) return;
+
+                    UpdateCalendarToggleButtonSelectionMode(toggleButton, ev);
+                    
+                    if (toggleButton.IsChecked)
                     {
-                        Debug.Write(ev.DateTimeModel.DateTime + ":");
-                        Debug.WriteLine(ev.IsChecked);
+                        this.SelectedItem = toggleButton;
+                        SelectionChanged?.Invoke(this, new SelectedItemEventArgs(this.SelectedItem));
                     }
                 };
             }
@@ -122,6 +145,47 @@ namespace ProCalendar.UI.Controls
             Grid.SetRow(itemControl, gridRow);
 
             return itemControl;
+        }
+
+        private void UpdateCalendarToggleButtonSelectionMode(CalendarToggleButton selectedCalendarToggleButton, CalendarToggleButtonEventArgs e)
+        {
+            if (this.ItemsPanelRoot == null) return;
+
+            switch (this.SelectionMode)
+            {
+                case AdaptiveGridViewSelectionMode.None:
+                    {
+                        break;
+                    }
+                case AdaptiveGridViewSelectionMode.Single:
+                    {
+                        for (int i = 0; i < ItemsPanelRoot.Children.Count; i++)
+                        {
+                            var toggleButton = ItemsPanelRoot.Children.ElementAt(i) as CalendarToggleButton;
+                            if (toggleButton == null) continue;
+
+                            var dataContext = toggleButton.DataContext as DateTimeModel;
+                            if (dataContext == null) continue;
+
+                            var selectedDataContext = selectedCalendarToggleButton.DataContext as DateTimeModel;
+                            if (selectedDataContext == null) continue;
+
+                            if (selectedCalendarToggleButton.IsChecked && !selectedDataContext.Equals(dataContext.DateTime))
+                                toggleButton.IsChecked = false;
+                        }
+
+                        break;
+                    }
+                case AdaptiveGridViewSelectionMode.Multiple:
+                    {
+                        //TODO: List<SelectedItem> ...
+                        break;
+                    }
+                case AdaptiveGridViewSelectionMode.Extended:
+                    {
+                        break;
+                    }
+            }
         }
 
         #region Dependency Properties
@@ -212,6 +276,24 @@ namespace ProCalendar.UI.Controls
         #endregion
 
         #region Template Properties
+
+        public CalendarToggleButton SelectedItem
+        {
+            get { return (CalendarToggleButton)GetValue(SelectedItemProperty); }
+            private set { SetValue(SelectedItemProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedItemProperty =
+            DependencyProperty.Register("SelectedItem", typeof(CalendarToggleButton), typeof(AdaptiveGridView), new PropertyMetadata(null));
+
+        public AdaptiveGridViewSelectionMode SelectionMode
+        {
+            get { return (AdaptiveGridViewSelectionMode)GetValue(SelectionModeProperty); }
+            set { SetValue(SelectionModeProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectionModeProperty =
+            DependencyProperty.Register("SelectionMode", typeof(AdaptiveGridViewSelectionMode), typeof(AdaptiveGridView), new PropertyMetadata(AdaptiveGridViewSelectionMode.Single));
 
         public Grid ItemsPanelRoot
         {

@@ -25,6 +25,7 @@ namespace ProCalendar.UI.Controls
     {
         private DateTimeModel _dateTimeModel;
         public event RoutedEventHandler Checked;
+
         private void ProCalendarItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var dateTimeModel = args.NewValue as DateTimeModel;
@@ -92,6 +93,8 @@ namespace ProCalendar.UI.Controls
 
         private void OnIsCheckedChangedHandler()
         {
+            VisualStateManager.GoToState(this, (IsChecked) ? "CheckedNormal" : "Normal", true);
+
             var dataContext = this.DataContext as DateTimeModel;
             if (dataContext == null) return;
 
