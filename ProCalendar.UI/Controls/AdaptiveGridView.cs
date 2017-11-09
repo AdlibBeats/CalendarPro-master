@@ -217,7 +217,7 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ItemBackgroundProperty =
-            DependencyProperty.RegisterAttached("ItemBackground", typeof(Brush), typeof(AdaptiveGridView), new PropertyMetadata(null));
+            DependencyProperty.RegisterAttached("ItemBackground", typeof(Brush), typeof(AdaptiveGridView), new PropertyMetadata(new SolidColorBrush(Colors.White)));
 
         public double ItemWidth
         {

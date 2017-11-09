@@ -31,7 +31,57 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.RegisterAttached("ItemsSource", typeof(object), typeof(AdaptiveGridView), new PropertyMetadata(null));
+            DependencyProperty.RegisterAttached("ItemsSource", typeof(object), typeof(AdaptiveGridView), new PropertyMetadata(new ObservableCollection<ListDates>()
+            {
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 1, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 2, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 3, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 4, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 5, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 6, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 7, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 8, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 9, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 10, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 11, 1)
+                }),
+                new ListDates(new DateTimeModel()
+                {
+                    DateTime = new DateTime(2017, 12, 1)
+                }),
+            }));
 
         protected override void OnApplyTemplate()
         {
@@ -49,6 +99,30 @@ namespace ProCalendar.UI.Controls
 
                 var dateTimeModel = ev.SelectedItem.DataContext as DateTimeModel;
                 if (dateTimeModel == null) return;
+
+                var button1 = this.GetTemplateChild("lol1") as Button;
+
+                var button2 = this.GetTemplateChild("lol2") as Button;
+
+                var superList = this.GetTemplateChild("superList") as ListBox;
+
+                if (button1 != null && button2 != null && superList != null)
+                {
+                    button1.Click += (sender1, e1) =>
+                    {
+                        int currentIndex = superList.SelectedIndex;
+
+                        if (currentIndex != 0)
+                        {
+                            superList.ScrollIntoView(superList.Items.ElementAt(currentIndex - 1));
+                        }
+                    };
+                    
+                    button2.Click += (sender1, e1) =>
+                    {
+                        superList.SelectedIndex++;
+                    };
+                }
 
                 Debug.WriteLine(dateTimeModel.DateTime);
             };
