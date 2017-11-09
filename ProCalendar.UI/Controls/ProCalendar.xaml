@@ -12,8 +12,6 @@
     <converters:DateTimeConverter x:Key="dateTimeConverter"/>
     <converters:DateTimeConverter2 x:Key="dateTimeConverter2"/>
 
-    <data:ListDates x:Key="data" />
-
     <Style TargetType="controls:ProCalendar">
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
@@ -25,7 +23,11 @@
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="DataContext" Value="{StaticResource data}"/>
+        <Setter Property="DataContext">
+            <Setter.Value>
+                <data:ListDates/>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:ProCalendar">
