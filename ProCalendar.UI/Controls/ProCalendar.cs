@@ -89,43 +89,38 @@ namespace ProCalendar.UI.Controls
 
             _rootGrid = this.GetTemplateChild("Root") as Grid;
 
-            _contentGrid = this.GetTemplateChild("ContentRoot") as AdaptiveGridView;
-            if (_contentGrid == null) return;
+            //_contentGrid = this.GetTemplateChild("ContentRoot") as AdaptiveGridView;
+            //if (_contentGrid == null) return;
 
-            _contentGrid.SelectionChanged += (sender, e) =>
+            var lolFlip = this.GetTemplateChild("lolFlip") as FlipView;
+            if (lolFlip == null) return;
+
+            var list = new ObservableCollection<ListDates>();
+
+            for (int i = 1; i <= 12; i++)
             {
-                var ev = e as SelectedItemEventArgs;
-                if (ev == null) return;
-
-                var dateTimeModel = ev.SelectedItem.DataContext as DateTimeModel;
-                if (dateTimeModel == null) return;
-
-                var button1 = this.GetTemplateChild("lol1") as Button;
-
-                var button2 = this.GetTemplateChild("lol2") as Button;
-
-                var superList = this.GetTemplateChild("superList") as ListBox;
-
-                if (button1 != null && button2 != null && superList != null)
+                list.Add(new ListDates(new DateTimeModel()
                 {
-                    button1.Click += (sender1, e1) =>
-                    {
-                        int currentIndex = superList.SelectedIndex;
+                    DateTime = new DateTime(2017, i, 1)
+                }));
+            }
 
-                        if (currentIndex != 0)
-                        {
-                            superList.ScrollIntoView(superList.Items.ElementAt(currentIndex - 1));
-                        }
-                    };
-                    
-                    button2.Click += (sender1, e1) =>
-                    {
-                        superList.SelectedIndex++;
-                    };
-                }
+            lolFlip.ItemsSource = list;
 
-                Debug.WriteLine(dateTimeModel.DateTime);
-            };
+            
+
+            //_contentGrid.SelectionChanged += (sender, e) =>
+            //{
+            //    var ev = e as SelectedItemEventArgs;
+            //    if (ev == null) return;
+
+            //    var dateTimeModel = ev.SelectedItem.DataContext as DateTimeModel;
+            //    if (dateTimeModel == null) return;
+
+
+
+            //    Debug.WriteLine(dateTimeModel.DateTime);
+            //};
         }
 
         protected override Size ArrangeOverride(Size finalSize)

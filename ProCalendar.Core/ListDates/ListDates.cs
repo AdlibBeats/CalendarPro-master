@@ -28,8 +28,17 @@ namespace ProCalendar.Core.ListDates
             DateTime datetime =
                 new DateTime(CurrentDay.DateTime.Year, CurrentDay.DateTime.Month, 1);
 
-            count = (int)this.CurrentDays[0].DateTime.DayOfWeek - 1;
-            AddRemainingDates(count, datetime.AddDays(-count));
+            int dayOfWeek = (int)this.CurrentDays[0].DateTime.DayOfWeek;
+            Debug.WriteLine(dayOfWeek);
+
+            if (dayOfWeek == 0)
+                count = 6;
+            else
+                count = dayOfWeek - 1;
+
+            Debug.WriteLine(count);
+            if (count != 0)
+                AddRemainingDates(count, datetime.AddDays(-count));
 
             foreach (var dateTimeModel in CurrentDays)
                 ContentDays.Add(dateTimeModel);
