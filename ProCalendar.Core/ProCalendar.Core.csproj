@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="BaseListDates\BaseListDates.cs" />
     <Compile Include="ListDates\ListDates.cs" />
+    <Compile Include="ListDates\ProListDates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\ProCalendar.Core.rd.xml" />
   </ItemGroup>

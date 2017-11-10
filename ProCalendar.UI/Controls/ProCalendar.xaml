@@ -9,6 +9,7 @@
         <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Colors/ColorsDictionary.xaml"/>
         <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Styles/ButtonDictionary.xaml"/>
         <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Styles/ListBoxItemDictionary.xaml"/>
+        <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Styles/FlipViewDictionary.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <converters:DateTimeConverter x:Key="dateTimeConverter"/>
@@ -50,30 +51,6 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <!--<Button
-                                Margin="0"
-                                Padding="0"
-                                Background="White"
-                                BorderBrush="Gray"
-                                BorderThickness="0.5"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                HorizontalContentAlignment="Left"
-                                VerticalContentAlignment="Center">
-                                <Button.Content>
-                                    <TextBlock
-                                        Margin="5,0"
-                                        Foreground="Black"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Left"
-                                        TextAlignment="Left"
-                                        Text="{Binding CurrentDay.DateTime.Now, Mode=OneWay}"/>
-                                </Button.Content>
-                            </Button>-->
-                            <!--<Border Grid.Row="0" Background="White" BorderBrush="Gray" BorderThickness="0.5" Height="40"/>-->
-                            <!--<TextBlock Grid.Row="0" Margin="5,0" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Left"
-                                     Text="{Binding CurrentDay.DateTime.Now, Mode=OneWay}&#xE0E2;"/>-->
-
                             <Grid Grid.Row="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -86,10 +63,10 @@
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Left"
                                     TextAlignment="Center"
-                                    Text="{Binding ElementName=lolFlip, Path=SelectedItem.CurrentDay.DateTime, Converter={StaticResource dateTimeConverter2}}"/>
+                                    Text="{Binding ElementName=ContentFlipView, Path=SelectedItem.CurrentDay.DateTime, Converter={StaticResource dateTimeConverter2}}"/>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                    <Button x:Name="lol1" Style="{StaticResource GlyphButton}" Content="&#xE014;"/>
-                                    <Button x:Name="lol2" Style="{StaticResource GlyphButton}" Content="&#xE015;"/>
+                                    <Button x:Name="PreviousButtonVertical" Style="{StaticResource GlyphButton}" Content="&#xE014;"/>
+                                    <Button x:Name="NextButtonVertical" Style="{StaticResource GlyphButton}" Content="&#xE015;"/>
                                 </StackPanel>
                             </Grid>
                             <controls:AdaptiveGridView
@@ -105,7 +82,14 @@
                                 </controls:AdaptiveGridView.DataContext>
                                 <controls:AdaptiveGridView.ItemTemplate>
                                     <DataTemplate>
-                                        <ContentControl Margin="2" BorderBrush="{x:Null}" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                                        <ContentControl
+                                            Margin="2"
+                                            BorderBrush="{x:Null}"
+                                            BorderThickness="0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center">
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 HorizontalAlignment="Center"
@@ -115,7 +99,10 @@
                                     </DataTemplate>
                                 </controls:AdaptiveGridView.ItemTemplate>
                             </controls:AdaptiveGridView>
-                            <FlipView Grid.Row="2" Height="216" x:Name="lolFlip">
+                            <FlipView x:Name="ContentFlipView" Grid.Row="2" Height="216" ItemsSource="{Binding ListDates, Mode=OneWay}" Style="{StaticResource CalendarFlipView}">
+                                <FlipView.DataContext>
+                                    <data:ProListDates/>
+                                </FlipView.DataContext>
                                 <FlipView.ItemContainerStyle>
                                     <Style TargetType="FlipViewItem">
                                         <Style.Setters>
@@ -143,11 +130,11 @@
                                                     <controls:CalendarToggleButton HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                                                         <controls:CalendarToggleButton.Content>
                                                             <TextBlock
-                                                            FontSize="12"
-                                                            VerticalAlignment="Center"
-                                                            HorizontalAlignment="Stretch"
-                                                            TextAlignment="Center"
-                                                            Text="{Binding DateTime.Day}"/>
+                                                                FontSize="12"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Stretch"
+                                                                TextAlignment="Center"
+                                                                Text="{Binding DateTime.Day}"/>
                                                         </controls:CalendarToggleButton.Content>
                                                     </controls:CalendarToggleButton>
                                                 </DataTemplate>
@@ -155,56 +142,9 @@
                                         </controls:AdaptiveGridView>
                                     </DataTemplate>
                                 </FlipView.ItemTemplate>
-                                <!--<FlipView.Items>
-                                    <controls:AdaptiveGridView
-                                        x:Name="ContentRoot"
-                                        Margin="0"
-                                        ColumnsCount="7"
-                                        RowsCount="6"
-                                        ItemHeight="36"
-                                        ItemWidth="36"
-                                        ItemsSource="{Binding ContentDays, Mode=OneWay}">
-                                        <controls:AdaptiveGridView.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:CalendarToggleButton HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                                    <controls:CalendarToggleButton.Content>
-                                                        <TextBlock
-                                                            FontSize="12"
-                                                            VerticalAlignment="Center"
-                                                            HorizontalAlignment="Stretch"
-                                                            TextAlignment="Center"
-                                                            Text="{Binding DateTime.Day}"/>
-                                                    </controls:CalendarToggleButton.Content>
-                                                </controls:CalendarToggleButton>
-                                            </DataTemplate>
-                                        </controls:AdaptiveGridView.ItemTemplate>
-                                    </controls:AdaptiveGridView>
-                                    <controls:AdaptiveGridView
-                                        Margin="0"
-                                        ColumnsCount="7"
-                                        RowsCount="6"
-                                        ItemHeight="36"
-                                        ItemWidth="36"
-                                        ItemsSource="{Binding ContentDays, Mode=OneWay}">
-                                        <controls:AdaptiveGridView.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:CalendarToggleButton HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                                    <controls:CalendarToggleButton.Content>
-                                                        <TextBlock
-                                                            FontSize="12"
-                                                            VerticalAlignment="Center"
-                                                            HorizontalAlignment="Stretch"
-                                                            TextAlignment="Center"
-                                                            Text="{Binding DateTime.Day}"/>
-                                                    </controls:CalendarToggleButton.Content>
-                                                </controls:CalendarToggleButton>
-                                            </DataTemplate>
-                                        </controls:AdaptiveGridView.ItemTemplate>
-                                    </controls:AdaptiveGridView>
-                                </FlipView.Items>-->
                                 <FlipView.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel AreScrollSnapPointsRegular="True" Orientation="Vertical"/>
+                                        <StackPanel AreScrollSnapPointsRegular="True" Orientation="Vertical"/>
                                     </ItemsPanelTemplate>
                                 </FlipView.ItemsPanel>
                             </FlipView>

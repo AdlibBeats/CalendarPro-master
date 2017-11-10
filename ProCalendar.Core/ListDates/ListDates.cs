@@ -20,6 +20,8 @@ namespace ProCalendar.Core.ListDates
             this.InitializeComponent();
         }
 
+        public int currentMonth { get; set; }
+
         private void InitializeComponent()
         {
             this.ContentDays = new ObservableCollection<DateTimeModel>();
@@ -29,14 +31,14 @@ namespace ProCalendar.Core.ListDates
                 new DateTime(CurrentDay.DateTime.Year, CurrentDay.DateTime.Month, 1);
 
             int dayOfWeek = (int)this.CurrentDays[0].DateTime.DayOfWeek;
-            Debug.WriteLine(dayOfWeek);
+            //Debug.WriteLine(dayOfWeek);
 
             if (dayOfWeek == 0)
                 count = 6;
             else
                 count = dayOfWeek - 1;
 
-            Debug.WriteLine(count);
+            //Debug.WriteLine(count);
             if (count != 0)
                 AddRemainingDates(count, datetime.AddDays(-count));
 
@@ -45,6 +47,8 @@ namespace ProCalendar.Core.ListDates
 
             count = ContentDaysCount - ContentDays.Count;
             AddRemainingDates(count, datetime.AddMonths(1));
+
+            currentMonth = ContentDays[0].DateTime.Month;
         }
 
         private void AddRemainingDates(int daysCount, DateTime firstDateTime)

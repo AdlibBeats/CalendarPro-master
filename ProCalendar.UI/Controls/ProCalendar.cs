@@ -17,115 +17,168 @@ namespace ProCalendar.UI.Controls
 {
     public class ProCalendar : Control
     {
-        private Grid _rootGrid;
-        private AdaptiveGridView _contentGrid;
+
+        public event RoutedEventHandler SelectionChanged;
+
         public ProCalendar()
         {
             this.DefaultStyleKey = typeof(ProCalendar);
         }
 
-        public object ItemsSource
-        {
-            get { return (object)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
-        }
-
-        public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.RegisterAttached("ItemsSource", typeof(object), typeof(AdaptiveGridView), new PropertyMetadata(new ObservableCollection<ListDates>()
-            {
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 1, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 2, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 3, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 4, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 5, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 6, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 7, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 8, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 9, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 10, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 11, 1)
-                }),
-                new ListDates(new DateTimeModel()
-                {
-                    DateTime = new DateTime(2017, 12, 1)
-                }),
-            }));
-
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
-            _rootGrid = this.GetTemplateChild("Root") as Grid;
+            this.ContentTemplateRoot = this.GetTemplateChild("ContentFlipView") as FlipView;
+            if (ContentTemplateRoot == null) return;
 
-            //_contentGrid = this.GetTemplateChild("ContentRoot") as AdaptiveGridView;
-            //if (_contentGrid == null) return;
-
-            var lolFlip = this.GetTemplateChild("lolFlip") as FlipView;
-            if (lolFlip == null) return;
-
-            var list = new ObservableCollection<ListDates>();
-
-            for (int i = 1; i <= 12; i++)
+            this.ContentTemplateRoot.Loaded += (sender, args) =>
             {
-                list.Add(new ListDates(new DateTimeModel()
+                this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot as StackPanel;
+                if (this.ItemsPanelRoot == null) return;
+
+                this.Children = new List<AdaptiveGridView>();
+
+                for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
                 {
-                    DateTime = new DateTime(2017, i, 1)
-                }));
-            }
+                    var flipViewItem = this.ItemsPanelRoot.Children.ElementAt(i) as FlipViewItem;
+                    if (flipViewItem == null) return;
 
-            lolFlip.ItemsSource = list;
+                    var adaptiveGridView = flipViewItem.ContentTemplateRoot as AdaptiveGridView;
+                    if (adaptiveGridView == null) return;
 
-            
+                    adaptiveGridView.SelectionChanged += AdaptiveGridView_SelectionChanged;
 
-            //_contentGrid.SelectionChanged += (sender, e) =>
-            //{
-            //    var ev = e as SelectedItemEventArgs;
-            //    if (ev == null) return;
+                    this.Children.Add(adaptiveGridView);
+                }
 
-            //    var dateTimeModel = ev.SelectedItem.DataContext as DateTimeModel;
-            //    if (dateTimeModel == null) return;
+                UpdateSelectedItem();
+            };
 
+            var previousButtonVertical = this.GetTemplateChild("PreviousButtonVertical") as Button;
+            var nextButtonVertical = this.GetTemplateChild("NextButtonVertical") as Button;
 
+            if (previousButtonVertical == null || nextButtonVertical == null) return;
 
-            //    Debug.WriteLine(dateTimeModel.DateTime);
-            //};
+            previousButtonVertical.Click += (s, e) =>
+            {
+                if (ContentTemplateRoot.SelectedIndex > 0)
+                    ContentTemplateRoot.SelectedIndex--;
+            };
+
+            nextButtonVertical.Click += (s, e) =>
+            {
+                if (ContentTemplateRoot.Items.Count - 1 > ContentTemplateRoot.SelectedIndex)
+                    ContentTemplateRoot.SelectedIndex++;
+            };
         }
 
-        protected override Size ArrangeOverride(Size finalSize)
+        private void AdaptiveGridView_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            return base.ArrangeOverride(finalSize);
+            var selectedItemEventArgs = e as SelectedItemEventArgs;
+            if (selectedItemEventArgs == null) return;
+
+            var selectedItem = selectedItemEventArgs.SelectedItem;
+            if (selectedItem == null) return;
+
+            var selectedData = selectedItem.DataContext as DateTimeModel;
+            if (selectedData == null) return;
+
+            this.Children.ForEach((AdaptiveGridView x) =>
+            {
+                x.Children.ForEach((CalendarToggleButton y) =>
+                {
+                    switch (this.SelectionMode)
+                    {
+                        case AdaptiveGridViewSelectionMode.None:
+                            {
+                                break;
+                            }
+                        case AdaptiveGridViewSelectionMode.Single:
+                            {
+                                var data = y.DataContext as DateTimeModel;
+                                if (data == null) return;
+
+                                if (selectedItem.IsChecked && !selectedData.Equals(data.DateTime))
+                                    y.IsChecked = false;
+                                else if (selectedItem.IsChecked && selectedData.Equals(data.DateTime))
+                                {
+                                    y.IsChecked = true;
+                                }
+                                else if (!selectedItem.IsChecked && selectedData.Equals(data.DateTime))
+                                    y.IsChecked = false;
+                                break;
+                            }
+                        case AdaptiveGridViewSelectionMode.Multiple:
+                            {
+                                //TODO: List<SelectedItem> ...
+                                break;
+                            }
+                        case AdaptiveGridViewSelectionMode.Extended:
+                            {
+                                break;
+                            }
+                    }
+                });
+            });
+
+            if (selectedItem.IsChecked)
+                SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem));
         }
+
+        private void UpdateSelectedItem()
+        {
+            var todayDateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+            var data = this.ContentTemplateRoot.DataContext as ProListDates;
+            if (data == null) return;
+
+            int index = 0;
+
+            foreach (var x in data.ListDates)
+            {
+                foreach (var y in x.ContentDays)
+                    if (y.Equals(todayDateTime))
+                        this.ContentTemplateRoot.SelectedIndex = index;
+
+                index++;
+            }
+        }
+
+        public FlipView ContentTemplateRoot
+        {
+            get { return (FlipView)GetValue(ContentTemplateRootProperty); }
+            private set { SetValue(ContentTemplateRootProperty, value); }
+        }
+
+        public static readonly DependencyProperty ContentTemplateRootProperty =
+            DependencyProperty.Register("ContentTemplateRoot", typeof(FlipView), typeof(ProCalendar), new PropertyMetadata(null));
+
+        public StackPanel ItemsPanelRoot
+        {
+            get { return (StackPanel)GetValue(ItemsPanelRootProperty); }
+            private set { SetValue(ItemsPanelRootProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemsPanelRootProperty =
+            DependencyProperty.Register("ItemsPanelRoot", typeof(StackPanel), typeof(ProCalendar), new PropertyMetadata(null));
+
+        public AdaptiveGridViewSelectionMode SelectionMode
+        {
+            get { return (AdaptiveGridViewSelectionMode)GetValue(SelectionModeProperty); }
+            set { SetValue(SelectionModeProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectionModeProperty =
+            DependencyProperty.Register("SelectionMode", typeof(AdaptiveGridViewSelectionMode), typeof(ProCalendar), new PropertyMetadata(AdaptiveGridViewSelectionMode.Single));
+
+        public List<AdaptiveGridView> Children
+        {
+            get { return (List<AdaptiveGridView>)GetValue(ChildrenProperty); }
+            private set { SetValue(ChildrenProperty, value); }
+        }
+
+        public static readonly DependencyProperty ChildrenProperty =
+            DependencyProperty.Register("Children", typeof(List<AdaptiveGridView>), typeof(ProCalendar), new PropertyMetadata(null));
     }
 }

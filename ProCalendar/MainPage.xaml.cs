@@ -1,9 +1,11 @@
-﻿using ProCalendar.Core.ListDates;
+﻿using ProCalendar.Core.BaseListDates;
+using ProCalendar.Core.ListDates;
 using ProCalendar.UI.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -25,6 +27,17 @@ namespace ProCalendar
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        private void ProCalendar_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            var ev = e as SelectedItemEventArgs;
+            if (ev == null) return;
+
+            var data = ev.SelectedItem.DataContext as DateTimeModel;
+            if (data == null) return;
+
+            Debug.WriteLine(data.DateTime);
         }
     }
 }
