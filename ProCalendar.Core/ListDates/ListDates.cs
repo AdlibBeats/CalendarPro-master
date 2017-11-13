@@ -11,57 +11,52 @@ namespace ProCalendar.Core.ListDates
 {
     public sealed class ListDates : BaseListDates.BaseListDates<DateTime>
     {
-        private const int ContentDaysCount = 42;
+        public int ContentDaysCapacity
+        {
+            get => 42;
+        }
 
-        public ListDates() : this(new DateTimeModel() { DateTime = DateTime.Now }) { }
+        public ListDates() : this(new DateTimeModel() { DateTime = DateTime.Now, IsBlackout = false }) { }
 
         public ListDates(DateTimeModel dateTimeModel) : base(dateTimeModel)
         {
-            this.InitializeComponent();
+            this.Initialize();
         }
 
-        public int currentMonth { get; set; }
-
-        private void InitializeComponent()
+        private void Initialize()
         {
-            this.ContentDays = new ObservableCollection<DateTimeModel>();
-
             int count = 0;
+            this.ContentDays = new ObservableCollection<DateTimeModel>();
+            
             DateTime datetime =
                 new DateTime(CurrentDay.DateTime.Year, CurrentDay.DateTime.Month, 1);
 
             int dayOfWeek = (int)this.CurrentDays[0].DateTime.DayOfWeek;
-            //Debug.WriteLine(dayOfWeek);
 
-            if (dayOfWeek == 0)
-                count = 6;
-            else
-                count = dayOfWeek - 1;
-
-            //Debug.WriteLine(count);
+            count = (dayOfWeek == 0) ? 6 : dayOfWeek - 1;
+            
             if (count != 0)
                 AddRemainingDates(count, datetime.AddDays(-count));
 
             foreach (var dateTimeModel in CurrentDays)
                 ContentDays.Add(dateTimeModel);
 
-            count = ContentDaysCount - ContentDays.Count;
+            count = ContentDaysCapacity - ContentDays.Count;
             AddRemainingDates(count, datetime.AddMonths(1));
-
-            currentMonth = ContentDays[0].DateTime.Month;
         }
 
-        private void AddRemainingDates(int daysCount, DateTime firstDateTime)
+        private void AddRemainingDates(int daysCount, DateTime remainingDateTime)
         {
-            DateTime[] firstDates = new DateTime[daysCount];
-
             for (int i = 0; i < daysCount; i++)
             {
-                firstDates[i] = firstDateTime;
-                firstDateTime = firstDateTime.AddDays(1);
                 DateTimeModel dateTimeModel = new DateTimeModel()
-                { DateTime = firstDates[i] };
+                {
+                    DateTime = remainingDateTime,
+                    IsWeekend = this.GetIsWeekend(remainingDateTime),
+                    IsBlackout = false
+                };
                 ContentDays.Add(dateTimeModel);
+                remainingDateTime = remainingDateTime.AddDays(1);
             }
         }
 

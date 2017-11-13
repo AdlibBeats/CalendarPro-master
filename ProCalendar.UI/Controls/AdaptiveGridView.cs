@@ -37,9 +37,11 @@ namespace ProCalendar.UI.Controls
     public sealed class SelectedItemEventArgs : RoutedEventArgs
     {
         public CalendarToggleButton SelectedItem { get; }
-        public SelectedItemEventArgs(CalendarToggleButton selectedItem)
+        public DateTimeModel DateTimeModel { get; }
+        public SelectedItemEventArgs(CalendarToggleButton selectedItem, DateTimeModel dateTimeModel)
         {
             SelectedItem = selectedItem;
+            DateTimeModel = dateTimeModel;
         }
     }
 
@@ -125,13 +127,15 @@ namespace ProCalendar.UI.Controls
                     var ev = e as CalendarToggleButtonEventArgs;
                     if (ev == null) return;
 
-                    this.SelectedItem = toggleButton;
-                    SelectionChanged?.Invoke(this, new SelectedItemEventArgs(this.SelectedItem));
+                    var selectedItem = sender as CalendarToggleButton;
+                    if (selectedItem == null) return;
+
+                    SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem, ev.DateTimeModel));
                 };
             }
 
-            itemControl.BorderBrush = this.ItemBorderBrush;
-            itemControl.BorderThickness = this.ItemBorderThickness;
+            //itemControl.BorderBrush = this.ItemBorderBrush;
+            //itemControl.BorderThickness = this.ItemBorderThickness;
             itemControl.Background = this.ItemBackground;
             itemControl.Width = this.ItemWidth;
             itemControl.Height = this.ItemHeight;
@@ -245,15 +249,6 @@ namespace ProCalendar.UI.Controls
 
         public static readonly DependencyProperty ChildrenProperty =
             DependencyProperty.Register("Children", typeof(List<CalendarToggleButton>), typeof(AdaptiveGridView), new PropertyMetadata(null));
-
-        public CalendarToggleButton SelectedItem
-        {
-            get { return (CalendarToggleButton)GetValue(SelectedItemProperty); }
-            private set { SetValue(SelectedItemProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(CalendarToggleButton), typeof(AdaptiveGridView), new PropertyMetadata(null));
 
         public Grid ItemsPanelRoot
         {

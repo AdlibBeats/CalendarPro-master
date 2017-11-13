@@ -33,6 +33,27 @@ namespace ProCalendar.Core.BaseListDates
 
     public class DateTimeModel : BaseModel
     {
+        //public bool IsSelected
+        //{
+        //    get => _isSelected;
+        //    set => SetValue(ref _isSelected, value);
+        //}
+        //private bool _isSelected;
+
+        public bool IsBlackout
+        {
+            get => _isBlackout;
+            set => SetValue(ref _isBlackout, value);
+        }
+        private bool _isBlackout;
+
+        public bool IsWeekend
+        {
+            get => _isWeekend;
+            set => SetValue(ref _isWeekend, value);
+        }
+        private bool _isWeekend;
+
         public DateTime DateTime
         {
             get => _dateTime;
@@ -62,9 +83,9 @@ namespace ProCalendar.Core.BaseListDates
         }
     }
 
-    public abstract class BaseListDates<T> : BaseModel
+    public class BaseListDates<T> : BaseModel
     {
-        public BaseListDates() : this(new DateTimeModel() { DateTime = DateTime.Now })
+        public BaseListDates() : this(new DateTimeModel() { DateTime = DateTime.Now, IsBlackout = false })
         {
 
         }
@@ -83,12 +104,17 @@ namespace ProCalendar.Core.BaseListDates
             int countDays = DateTime.DaysInMonth(CurrentDay.DateTime.Year, CurrentDay.DateTime.Month);
             for (int day = 1; day <= countDays; day++)
             {
+                DateTime dateTime = new DateTime(CurrentDay.DateTime.Year, CurrentDay.DateTime.Month, day);
                 CurrentDays.Add(new DateTimeModel()
                 {
-                    DateTime = new DateTime(CurrentDay.DateTime.Year, CurrentDay.DateTime.Month, day)
+                    DateTime = dateTime,
+                    IsWeekend = this.GetIsWeekend(dateTime)
                 });
             }
         }
+
+        public virtual bool GetIsWeekend(DateTime dateTime) =>
+            dateTime.DayOfWeek == DayOfWeek.Saturday || dateTime.DayOfWeek == DayOfWeek.Sunday;
 
         public DateTimeModel CurrentDay
         {

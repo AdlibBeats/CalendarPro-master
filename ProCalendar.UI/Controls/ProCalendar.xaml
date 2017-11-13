@@ -14,7 +14,7 @@
 
     <converters:DateTimeConverter x:Key="dateTimeConverter"/>
     <converters:DateTimeConverter2 x:Key="dateTimeConverter2"/>
-
+    
     <Style TargetType="controls:ProCalendar">
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
@@ -26,11 +26,6 @@
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <!--<Setter Property="DataContext">
-            <Setter.Value>
-                <data:ListDates/>
-            </Setter.Value>
-        </Setter>-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:ProCalendar">
@@ -42,15 +37,17 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         BorderBrush="{TemplateBinding BorderBrush}">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <Grid Grid.Row="0" BorderBrush="Gray" BorderThickness="0.5">
+                        <Button x:Name="lol" Grid.Row="0" Width="300" Height="50"/>
+                        <Grid x:Name="haha" Grid.Row="1" BorderBrush="Gray" BorderThickness="0.5" Visibility="Collapsed">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            
                             <Grid Grid.Row="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -99,7 +96,11 @@
                                     </DataTemplate>
                                 </controls:AdaptiveGridView.ItemTemplate>
                             </controls:AdaptiveGridView>
-                            <FlipView x:Name="ContentFlipView" Grid.Row="2" Height="216" ItemsSource="{Binding ListDates, Mode=OneWay}" Style="{StaticResource CalendarFlipView}">
+                            <FlipView
+                                x:Name="ContentFlipView"
+                                Grid.Row="2"
+                                Height="216"
+                                ItemsSource="{Binding ListDates, Mode=OneWay}" Style="{StaticResource CalendarFlipView}">
                                 <FlipView.DataContext>
                                     <data:ProListDates/>
                                 </FlipView.DataContext>
@@ -109,7 +110,8 @@
                                             <Setter Property="Background" Value="Transparent"/>
                                             <Setter Property="Margin" Value="0"/>
                                             <Setter Property="Padding" Value="0"/>
-                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                            <Setter Property="BorderBrush" Value="{x:Null}"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
                                             <Setter Property="HorizontalAlignment" Value="Stretch"/>
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                         </Style.Setters>

@@ -28,6 +28,11 @@
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminatePressed" Color="Black"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminateDisabled" Color="White"/>
 
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendNormal" Color="#FFDADADA"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendPointerOver" Color="#FFDADADA"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendPressed" Color="#FFDADADA"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendDisabled" Color="#FFDADADA"/>
+    
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.Normal" Color="White"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.PointerOver" Color="White"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.Pressed" Color="White"/>

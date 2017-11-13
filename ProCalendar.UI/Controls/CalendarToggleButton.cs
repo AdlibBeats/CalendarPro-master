@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace ProCalendar.UI.Controls
 {
@@ -52,20 +53,16 @@ namespace ProCalendar.UI.Controls
         {
             if (_dateTimeModel == null) return;
 
-            if (_dateTimeModel.Equals(DateTime.Now))
-            {
-                VisualStateManager.GoToState(this, "ToodayTrue", true);
-                this.IsEnabled = false;
-            }
-            else
-                VisualStateManager.GoToState(this, "ToodayFalse", true);
+            VisualStateManager.GoToState(this, _dateTimeModel.Equals(DateTime.Now) ? "ToodayTrue" : "ToodayFalse", true);
+            VisualStateManager.GoToState(this, _dateTimeModel.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
+            //VisualStateManager.GoToState(this, _dateTimeModel.IsSelected ? "CheckedNormal" : "Normal", true);
         }
 
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
-            VisualStateManager.GoToState(this, (IsChecked) ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, IsChecked ? "CheckedNormal" : "Normal", true);
 
             UpdateCalendarStates();
         }
@@ -83,44 +80,40 @@ namespace ProCalendar.UI.Controls
         {
             var control = d as CalendarToggleButton;
             if (control == null) return;
-            //if (control != null)
-            //{
-            //    control.UpdateStates();
-            //}
 
             control.OnIsCheckedChangedHandler();
         }
 
         private void OnIsCheckedChangedHandler()
         {
-            VisualStateManager.GoToState(this, (IsChecked) ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedNormal" : "Normal", true);
 
-            var dataContext = this.DataContext as DateTimeModel;
-            if (dataContext == null) return;
-
-            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(this.IsChecked, dataContext));
+            var dateTimeModel = this.DataContext as DateTimeModel;
+            if (dateTimeModel == null) return;
+            
+            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(this.IsChecked, dateTimeModel));
         }
 
         private void ContentControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, (IsChecked) ? "CheckedPressed" : "Pressed", true);
+            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedPressed" : "Pressed", true);
 
-            IsChecked = !IsChecked;
+            this.IsChecked = !this.IsChecked;
         }
 
         private void ContentControl_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, (IsChecked) ? "CheckedPointerOver" : "PointerOver", true);
+            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedPointerOver" : "PointerOver", true);
         }
 
         private void ContentControl_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, (IsChecked) ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedNormal" : "Normal", true);
         }
 
         private void ContentControl_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, (IsChecked) ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedNormal" : "Normal", true);
         }
     }
 }

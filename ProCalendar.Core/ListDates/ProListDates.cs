@@ -8,7 +8,7 @@ using Windows.UI.Xaml;
 
 namespace ProCalendar.Core.ListDates
 {
-    public class ProListDates : BaseListDates.BaseModel
+    public sealed class ProListDates : BaseListDates.BaseModel
     {
         public int MinYear
         {
@@ -24,17 +24,20 @@ namespace ProCalendar.Core.ListDates
         }
         private int _maxYear;
 
-        public ProListDates() : this(2017, 2018) { }
+        public ProListDates() : this(DateTime.Now.Year, DateTime.Now.AddYears(1).Year)
+        {
+
+        }
 
         public ProListDates(int minYear, int maxYear)
         {
             MinYear = minYear;
             MaxYear = maxYear;
 
-            Init();
+            Initialize();
         }
 
-        public void Init()
+        private void Initialize()
         {
             ListDates = new ObservableCollection<Core.ListDates.ListDates>();
 
@@ -42,13 +45,19 @@ namespace ProCalendar.Core.ListDates
             {
                 for (int j = 1; j <= 12; j++)
                 {
+                    DateTime dateTime = new DateTime(i, j, 1);
                     ListDates.Add(new Core.ListDates.ListDates(new BaseListDates.DateTimeModel()
                     {
-                        DateTime = new DateTime(i, j, 1)
+                        DateTime = dateTime,
+                        IsWeekend = this.GetIsWeekend(dateTime),
+                        IsBlackout = false
                     }));
                 }
             }
         }
+
+        public bool GetIsWeekend(DateTime dateTime) =>
+            dateTime.DayOfWeek == DayOfWeek.Saturday || dateTime.DayOfWeek == DayOfWeek.Sunday;
 
         public ObservableCollection<ListDates> ListDates
         {
