@@ -44,19 +44,19 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Rectangle
-                        x:Name="PressedBackground"
-                        Fill="Transparent"
-                        Control.IsTemplateFocusTarget="True"/>
+                            x:Name="PressedBackground"
+                            Fill="Transparent"
+                            Control.IsTemplateFocusTarget="True"/>
                         <ContentPresenter
-                        x:Name="ContentPresenter"
-                        Content="{TemplateBinding Content}"
-                        ContentTransitions="{TemplateBinding ContentTransitions}"
-                        ContentTemplate="{TemplateBinding ContentTemplate}"
-                        Style="{StaticResource BodyContentPresenterStyle}"
-                        TextWrapping="NoWrap"
-                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                        Margin="{TemplateBinding Padding}" />
+                            x:Name="ContentPresenter"
+                            Content="{TemplateBinding Content}"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Style="{StaticResource BodyContentPresenterStyle}"
+                            TextWrapping="NoWrap"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Margin="{TemplateBinding Padding}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
