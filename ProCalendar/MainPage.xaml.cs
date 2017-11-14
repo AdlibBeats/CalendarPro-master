@@ -28,19 +28,5 @@ namespace ProCalendar
         {
             this.InitializeComponent();
         }
-
-        private void ProCalendar_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-            var selectedItem = sender as CalendarToggleButton;
-            if (selectedItem == null) return;
-
-            var ev = e as SelectedItemEventArgs;
-            if (ev == null) return;
-
-            var data = ev.SelectedItem.DataContext as DateTimeModel;
-            if (data == null) return;
-
-            Debug.WriteLine($"{selectedItem.IsChecked} {data.DateTime}");
-        }
     }
 }

@@ -108,7 +108,8 @@
   <ItemGroup>
     <Compile Include="Controls\AdaptiveGridView.cs" />
     <Compile Include="Controls\CalendarToggleButton.cs" />
-    <Compile Include="Controls\ProCalendar.cs" />
+    <Compile Include="Controls\ProCalendarView.cs" />
+    <Compile Include="Controls\ProCalendarPicker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueConverters\DateTimeConverter.cs" />
     <EmbeddedResource Include="Properties\ProCalendar.UI.rd.xml" />
@@ -136,7 +137,12 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
-    <Page Include="Controls\ProCalendar.xaml">
+    <Page Include="Controls\ProCalendarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Controls\ProCalendarPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -157,7 +163,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Assets\icon_calendar.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProCalendar.Core\ProCalendar.Core.csproj">
       <Project>{3662906f-1e19-4319-a86c-cfdfed39feff}</Project>

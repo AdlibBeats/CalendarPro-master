@@ -24,18 +24,9 @@ namespace ProCalendar.UI.Controls
 
     public class CalendarToggleButton : ContentControl
     {
-        private DateTimeModel _dateTimeModel;
+        private DateTimeModel Model { get; set; }
+
         public event RoutedEventHandler Checked;
-
-        private void ProCalendarItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            var dateTimeModel = args.NewValue as DateTimeModel;
-            if (dateTimeModel == null) return;
-
-            _dateTimeModel = dateTimeModel;
-
-            UpdateCalendarStates();
-        }
 
         public CalendarToggleButton()
         {
@@ -47,73 +38,88 @@ namespace ProCalendar.UI.Controls
             this.PointerExited += ContentControl_PointerExited;
 
             this.DataContextChanged += ProCalendarItem_DataContextChanged;
+
+            this.Loaded += CalendarToggleButton_Loaded;
         }
 
-        private void UpdateCalendarStates()
+        private void CalendarToggleButton_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_dateTimeModel == null) return;
-
-            VisualStateManager.GoToState(this, _dateTimeModel.Equals(DateTime.Now) ? "ToodayTrue" : "ToodayFalse", true);
-            VisualStateManager.GoToState(this, _dateTimeModel.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
-            //VisualStateManager.GoToState(this, _dateTimeModel.IsSelected ? "CheckedNormal" : "Normal", true);
+            UpdateStates();
         }
 
-        protected override void OnApplyTemplate()
+        private void ProCalendarItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            base.OnApplyTemplate();
+            var contentControl = sender as CalendarToggleButton;
+            if (contentControl == null) return;
 
-            VisualStateManager.GoToState(this, IsChecked ? "CheckedNormal" : "Normal", true);
+            this.Model = args.NewValue as DateTimeModel;
+            if (this.Model == null) return;
 
-            UpdateCalendarStates();
+            this.Model.PropertyChanged += (s, e) =>
+            {
+                contentControl.UpdateStates();
+            };
         }
 
-        public bool IsChecked
+        private void UpdateStates()
         {
-            get { return (bool)GetValue(IsCheckedProperty); }
-            set { SetValue(IsCheckedProperty, value); }
-        }
-
-        public static readonly DependencyProperty IsCheckedProperty =
-            DependencyProperty.Register("IsChecked", typeof(bool), typeof(CalendarToggleButton), new PropertyMetadata(false, OnIsCheckedChanged));
-
-        private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = d as CalendarToggleButton;
-            if (control == null) return;
-
-            control.OnIsCheckedChangedHandler();
-        }
-
-        private void OnIsCheckedChangedHandler()
-        {
-            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedNormal" : "Normal", true);
-
-            var dateTimeModel = this.DataContext as DateTimeModel;
-            if (dateTimeModel == null) return;
-            
-            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(this.IsChecked, dateTimeModel));
+            VisualStateManager.GoToState(this, this.Model.Equals(DateTime.Now) ? "ToodayTrue" : "ToodayFalse", true);
+            VisualStateManager.GoToState(this, this.Model.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
+            VisualStateManager.GoToState(this, this.Model.IsSelected ? "CheckedNormal" : "Normal", true);
+            //TODO: IsBlackout
         }
 
         private void ContentControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedPressed" : "Pressed", true);
+            VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedPressed" : "Pressed", true);
 
-            this.IsChecked = !this.IsChecked;
+            Model.IsSelected = !Model.IsSelected;
+
+            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(this.Model.IsSelected, this.Model));
         }
 
         private void ContentControl_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedPointerOver" : "PointerOver", true);
+            VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedPointerOver" : "PointerOver", true);
         }
 
         private void ContentControl_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedNormal" : "Normal", true);
         }
 
         private void ContentControl_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, this.IsChecked ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedNormal" : "Normal", true);
         }
+
+        /*
+            private void StartLoadedAnimation()
+            {
+                Storyboard sb = new Storyboard();
+
+                DoubleAnimation da = new DoubleAnimation()
+                {
+                    Duration = new Duration(TimeSpan.FromSeconds(1)),
+                    From = 0,
+                    To = 200,
+                    EasingFunction = new ElasticEase()
+                    {
+                        EasingMode = EasingMode.EaseInOut,
+                        Oscillations = 2,
+                        Springiness = 1
+                    },
+                    RepeatBehavior = new RepeatBehavior(1),
+                    AutoReverse = false
+                };
+
+                Storyboard.SetTarget(da, this);
+                Storyboard.SetTargetProperty(da, "(Control.Width)");
+
+                sb.Children.Add(da);
+
+                sb.Begin();
+            }
+        */
     }
 }

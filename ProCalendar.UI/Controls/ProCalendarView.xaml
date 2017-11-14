@@ -15,20 +15,20 @@
     <converters:DateTimeConverter x:Key="dateTimeConverter"/>
     <converters:DateTimeConverter2 x:Key="dateTimeConverter2"/>
     
-    <Style TargetType="controls:ProCalendar">
+    <Style TargetType="controls:ProCalendarView">
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="Background" Value="White"/>
         <Setter Property="BorderBrush" Value="Gray"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderThickness" Value="0.5"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="controls:ProCalendar">
+                <ControlTemplate TargetType="controls:ProCalendarView">
                     <Grid
                         x:Name="Root"
                         Background="{TemplateBinding Background}"
@@ -36,18 +36,16 @@
                         HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         BorderBrush="{TemplateBinding BorderBrush}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Button x:Name="lol" Grid.Row="0" Width="300" Height="50"/>
-                        <Grid x:Name="haha" Grid.Row="1" BorderBrush="Gray" BorderThickness="0.5" Visibility="Collapsed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid x:Name="RootContent" Margin="-1,0,0,1">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            
+
                             <Grid Grid.Row="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -122,6 +120,8 @@
                                         <controls:AdaptiveGridView
                                             x:Name="ContentRoot"
                                             Margin="0"
+                                            BorderBrush="Gray"
+                                            BorderThickness="0.5,0.5,0,0"
                                             ColumnsCount="7"
                                             RowsCount="6"
                                             ItemHeight="36"

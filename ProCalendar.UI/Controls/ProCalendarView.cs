@@ -17,98 +17,24 @@ using Windows.UI;
 
 namespace ProCalendar.UI.Controls
 {
-    public class ProCalendar : Control
+    public class ProCalendarView : Control
     {
         public event RoutedEventHandler SelectionChanged;
+        public event RoutedEventHandler UnselectionChanged;
 
-        public ProCalendar()
+        public ProCalendarView()
         {
-            this.DefaultStyleKey = typeof(ProCalendar);
+            this.DefaultStyleKey = typeof(ProCalendarView);
         }
 
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
-            var rootGrid = this.GetTemplateChild("Root") as Grid;
-            if (rootGrid == null) return;
-
-            Button b = this.GetTemplateChild("lol") as Button;
-            if (b == null) return;
-
-            b.Click += (s, e) =>
-            {
-                var c = this.GetTemplateChild("haha") as Grid;
-                c.Visibility = Visibility.Visible;
-                c.UpdateLayout();
-            };
-
             this.ContentTemplateRoot = this.GetTemplateChild("ContentFlipView") as FlipView;
             if (ContentTemplateRoot == null) return;
 
-            this.ContentTemplateRoot.Loaded += (sender, args) =>
-            {
-                this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot as StackPanel;
-                if (this.ItemsPanelRoot == null) return;
-
-                this.Children = new List<AdaptiveGridView>();
-
-                for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
-                {
-                    var flipViewItem = this.ItemsPanelRoot.Children.ElementAt(i) as FlipViewItem;
-                    if (flipViewItem == null) return;
-
-                    var adaptiveGridView = flipViewItem.ContentTemplateRoot as AdaptiveGridView;
-                    if (adaptiveGridView == null) return;
-
-                    adaptiveGridView.SelectionChanged += AdaptiveGridView_SelectionChanged;
-
-                    this.Children.Add(adaptiveGridView);
-                }
-
-                UpdateSelectedItem();
-            };
-
-            this.ContentTemplateRoot.SelectionChanged += (s, e) =>
-            {
-                //this.Children.ForEach((AdaptiveGridView adaptiveGridView) =>
-                //{
-                //    adaptiveGridView.Children.ForEach((CalendarToggleButton calendarToggleButton) =>
-                //    {
-                //        if (calendarToggleButton.IsChecked)
-                //        {
-                //            Storyboard sb = new Storyboard()
-                //            {
-                //                FillBehavior = FillBehavior.HoldEnd,
-                //                RepeatBehavior = new RepeatBehavior(1)
-                //            };
-
-                //            ColorAnimation ca1 = new ColorAnimation()
-                //            {
-                //                Duration = new Duration(TimeSpan.FromSeconds(1)),
-                //                From = Colors.White,
-                //                To = Colors.Red
-                //            };
-
-                //            ColorAnimation ca2 = new ColorAnimation()
-                //            {
-                //                Duration = new Duration(TimeSpan.FromSeconds(1)),
-                //                From = Colors.White,
-                //                To = Colors.Red
-                //            };
-
-                //            Storyboard.SetTargetProperty(ca1, "(Control.Background).(SolidColorBrush.Color)");
-                //            Storyboard.SetTarget(ca1, calendarToggleButton);
-                //            sb.Children.Add(ca1);
-                //            Storyboard.SetTargetProperty(ca2, "(Control.BorderBrush).(SolidColorBrush.Color)");
-                //            Storyboard.SetTarget(ca2, calendarToggleButton);
-                //            sb.Children.Add(ca2);
-
-                //            sb.Begin();
-                //        }
-                //    });
-                //});
-            };
+            this.ContentTemplateRoot.Loaded += ContentTemplateRoot_Loaded;
 
             var previousButtonVertical = this.GetTemplateChild("PreviousButtonVertical") as Button;
             if (previousButtonVertical == null) return;
@@ -127,6 +53,37 @@ namespace ProCalendar.UI.Controls
                 if (ContentTemplateRoot.Items.Count - 1 > ContentTemplateRoot.SelectedIndex)
                     ContentTemplateRoot.SelectedIndex++;
             };
+        }
+
+        private void ContentTemplateRoot_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!IsContentTemplateRootLoaded)
+            {
+                this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot as StackPanel;
+                if (this.ItemsPanelRoot == null) return;
+
+                this.Children = new List<AdaptiveGridView>();
+
+                for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
+                {
+                    var flipViewItem = this.ItemsPanelRoot.Children.ElementAt(i) as FlipViewItem;
+                    if (flipViewItem == null) return;
+
+                    var adaptiveGridView = flipViewItem.ContentTemplateRoot as AdaptiveGridView;
+                    if (adaptiveGridView == null) return;
+
+                    adaptiveGridView.SelectionChanged += AdaptiveGridView_SelectionChanged;
+
+                    this.Children.Add(adaptiveGridView);
+                }
+            }
+
+            IsContentTemplateRootLoaded = true;
+
+            if (this.SelectedItem != null)
+                UpdateSelectedItem(i => i.IsSelected);
+            else
+                UpdateSelectedItem(i => i.IsToday);
         }
 
         private void AdaptiveGridView_SelectionChanged(object sender, RoutedEventArgs e)
@@ -159,12 +116,15 @@ namespace ProCalendar.UI.Controls
                                 var data = calendarToggleButton.DataContext as DateTimeModel;
                                 if (data == null) return;
 
-                                if (selectedItem.IsChecked && !selectedDateTimeModel.Equals(data.DateTime))
-                                    calendarToggleButton.IsChecked = false;
-                                else if (selectedItem.IsChecked && selectedDateTimeModel.Equals(data.DateTime))
-                                    calendarToggleButton.IsChecked = true;
-                                else if (!selectedItem.IsChecked && selectedDateTimeModel.Equals(data.DateTime))
-                                    calendarToggleButton.IsChecked = false;
+                                if (selectedDateTimeModel.IsSelected)
+                                {
+                                    if (!selectedDateTimeModel.Equals(data.DateTime))
+                                        data.IsSelected = false;
+                                    else
+                                        data.IsSelected = true;
+                                }
+                                else if (selectedDateTimeModel.Equals(data.DateTime))
+                                    data.IsSelected = false;
                                 break;
                             }
                         case AdaptiveGridViewSelectionMode.Multiple:
@@ -180,13 +140,17 @@ namespace ProCalendar.UI.Controls
                 });
             });
 
-            //this.SelectedItem = selectedItem;
-
-            if (selectedItem.IsChecked)
+            if (selectedDateTimeModel.IsSelected)
                 SelectionChanged?.Invoke(selectedItem, new SelectedItemEventArgs(selectedItem, selectedDateTimeModel));
+            else
+            {
+                this.SelectedItem = null;
+
+                UnselectionChanged?.Invoke(selectedItem, new SelectedItemEventArgs(selectedItem, selectedDateTimeModel));
+            }
         }
 
-        private void UpdateSelectedItem()
+        private void UpdateSelectedItem(Predicate<DateTimeModel> func)
         {
             var todayDateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
@@ -198,12 +162,20 @@ namespace ProCalendar.UI.Controls
             foreach (var x in data.ListDates)
             {
                 foreach (var y in x.ContentDays)
-                    if (y.Equals(todayDateTime))
+                    if (func.Invoke(y))
                         this.ContentTemplateRoot.SelectedIndex = index;
-
                 index++;
             }
         }
+
+        public bool IsContentTemplateRootLoaded
+        {
+            get { return (bool)GetValue(IsContentTemplateRootLoadedProperty); }
+            private set { SetValue(IsContentTemplateRootLoadedProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsContentTemplateRootLoadedProperty =
+            DependencyProperty.Register("IsContentTemplateRootLoaded", typeof(bool), typeof(ProCalendarView), new PropertyMetadata(false));
 
         public FlipView ContentTemplateRoot
         {
@@ -212,7 +184,7 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ContentTemplateRootProperty =
-            DependencyProperty.Register("ContentTemplateRoot", typeof(FlipView), typeof(ProCalendar), new PropertyMetadata(null));
+            DependencyProperty.Register("ContentTemplateRoot", typeof(FlipView), typeof(ProCalendarView), new PropertyMetadata(null));
 
         public StackPanel ItemsPanelRoot
         {
@@ -221,7 +193,7 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ItemsPanelRootProperty =
-            DependencyProperty.Register("ItemsPanelRoot", typeof(StackPanel), typeof(ProCalendar), new PropertyMetadata(null));
+            DependencyProperty.Register("ItemsPanelRoot", typeof(StackPanel), typeof(ProCalendarView), new PropertyMetadata(null));
 
         public DateTimeModel SelectedDateTimeModel
         {
@@ -230,7 +202,7 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty SelectedDateTimeModelProperty =
-            DependencyProperty.Register("SelectedDateTimeModel", typeof(DateTimeModel), typeof(ProCalendar), new PropertyMetadata(null));
+            DependencyProperty.Register("SelectedDateTimeModel", typeof(DateTimeModel), typeof(ProCalendarView), new PropertyMetadata(null));
 
         public CalendarToggleButton SelectedItem
         {
@@ -239,7 +211,7 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(CalendarToggleButton), typeof(ProCalendar), new PropertyMetadata(null));
+            DependencyProperty.Register("SelectedItem", typeof(CalendarToggleButton), typeof(ProCalendarView), new PropertyMetadata(null));
 
         public AdaptiveGridViewSelectionMode SelectionMode
         {
@@ -248,7 +220,7 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty SelectionModeProperty =
-            DependencyProperty.Register("SelectionMode", typeof(AdaptiveGridViewSelectionMode), typeof(ProCalendar), new PropertyMetadata(AdaptiveGridViewSelectionMode.Single));
+            DependencyProperty.Register("SelectionMode", typeof(AdaptiveGridViewSelectionMode), typeof(ProCalendarView), new PropertyMetadata(AdaptiveGridViewSelectionMode.Single));
 
         public List<AdaptiveGridView> Children
         {
@@ -257,6 +229,6 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ChildrenProperty =
-            DependencyProperty.Register("Children", typeof(List<AdaptiveGridView>), typeof(ProCalendar), new PropertyMetadata(null));
+            DependencyProperty.Register("Children", typeof(List<AdaptiveGridView>), typeof(ProCalendarView), new PropertyMetadata(null));
     }
 }

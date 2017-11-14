@@ -134,8 +134,9 @@ namespace ProCalendar.UI.Controls
                 };
             }
 
-            //itemControl.BorderBrush = this.ItemBorderBrush;
-            //itemControl.BorderThickness = this.ItemBorderThickness;
+            itemControl.BorderBrush = this.ItemBorderBrush;
+            itemControl.BorderThickness = this.ItemBorderThickness;
+            itemControl.Foreground = this.ItemForeground;
             itemControl.Background = this.ItemBackground;
             itemControl.Width = this.ItemWidth;
             itemControl.Height = this.ItemHeight;
@@ -163,7 +164,7 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ItemBorderBrushProperty =
-            DependencyProperty.Register("ItemBorderBrush", typeof(Brush), typeof(AdaptiveGridView), new PropertyMetadata(null));
+            DependencyProperty.Register("ItemBorderBrush", typeof(Brush), typeof(AdaptiveGridView), new PropertyMetadata(new SolidColorBrush(Colors.Gray)));
 
         public Thickness ItemBorderThickness
         {
@@ -172,7 +173,16 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ItemBorderThicknessProperty =
-            DependencyProperty.Register("ItemBorderThickness", typeof(Thickness), typeof(AdaptiveGridView), new PropertyMetadata(new Thickness(0)));
+            DependencyProperty.Register("ItemBorderThickness", typeof(Thickness), typeof(AdaptiveGridView), new PropertyMetadata(new Thickness(0, 0, 0.5, 0.5)));
+
+        public Brush ItemForeground
+        {
+            get { return (Brush)GetValue(ItemForegroundProperty); }
+            set { SetValue(ItemForegroundProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemForegroundProperty =
+            DependencyProperty.RegisterAttached("ItemForeground", typeof(Brush), typeof(AdaptiveGridView), new PropertyMetadata(new SolidColorBrush(Colors.Black)));
 
         public Brush ItemBackground
         {

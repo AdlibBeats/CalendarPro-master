@@ -49,12 +49,16 @@ namespace ProCalendar.Core.ListDates
         {
             for (int i = 0; i < daysCount; i++)
             {
-                DateTimeModel dateTimeModel = new DateTimeModel()
+                var dateTimeModel = new DateTimeModel()
                 {
                     DateTime = remainingDateTime,
                     IsWeekend = this.GetIsWeekend(remainingDateTime),
-                    IsBlackout = false
+                    IsBlackout = false,
+                    IsSelected = false,
+                    IsDisabled = false,
+                    IsToday = this.GetIsToday(remainingDateTime)
                 };
+
                 ContentDays.Add(dateTimeModel);
                 remainingDateTime = remainingDateTime.AddDays(1);
             }

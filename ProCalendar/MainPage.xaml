@@ -7,9 +7,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:custom="using:ProCalendar.UI.Controls"
     mc:Ignorable="d">
+    <Page.Resources>
+
+        
+
+    </Page.Resources>
 
     <Grid x:Name="root" Background="LightCoral">
-        <custom:ProCalendar SelectionChanged="ProCalendar_SelectionChanged" />
-        
+        <custom:ProCalendarPicker/>
     </Grid>
 </Page>
