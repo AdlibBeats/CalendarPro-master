@@ -1,6 +1,7 @@
 ﻿using ProCalendar.Core.BaseListDates;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,10 +64,52 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateStates()
         {
-            VisualStateManager.GoToState(this, this.Model.Equals(DateTime.Now) ? "ToodayTrue" : "ToodayFalse", true);
+            switch (this.Model.IsSelected)
+            {
+                case true:
+                    {
+                        if (this.Model.IsDisabled)
+                        {
+                            this.IsEnabled = false;
+                            VisualStateManager.GoToState(this, "CheckedDisabled", true);
+                        }
+                        else if (this.Model.IsBlackout)
+                        {
+                            this.IsEnabled = false;
+                            VisualStateManager.GoToState(this, "CheckedBlackouted", true);
+                        }
+                        else
+                        {
+                            this.IsEnabled = true;
+                            VisualStateManager.GoToState(this, "CheckedNormal", true);
+                        }
+                        break;
+                    }
+                case false:
+                    {
+                        if (this.Model.IsDisabled)
+                        {
+                            this.IsEnabled = false;
+                            VisualStateManager.GoToState(this, "Disabled", true);
+                        }
+                        else if (this.Model.IsBlackout)
+                        {
+                            this.IsEnabled = false;
+                            VisualStateManager.GoToState(this, "Blackouted", true);
+                        }
+                        else
+                        {
+                            this.IsEnabled = true;
+                            VisualStateManager.GoToState(this, "Normal", true);
+                        }
+                        break;
+                    }
+            }
+
+            VisualStateManager.GoToState(this, this.Model.IsToday ? "IsToodayTrue" : "IsToodayFalse", true);
             VisualStateManager.GoToState(this, this.Model.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
-            VisualStateManager.GoToState(this, this.Model.IsSelected ? "CheckedNormal" : "Normal", true);
-            //TODO: IsBlackout
+
+            //Debug.WriteLine($"{this.Model.IsDisabled} : {this.Model.IsBlackout} : {this.Model.IsSelected} : {this.Model.IsToday} : {this.Model.IsWeekend}\n{this.Model.DateTime}\n");
         }
 
         private void ContentControl_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -92,6 +135,8 @@ namespace ProCalendar.UI.Controls
         {
             VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedNormal" : "Normal", true);
         }
+
+
 
         /*
             private void StartLoadedAnimation()

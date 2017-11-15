@@ -16,7 +16,7 @@ namespace ProCalendar.Core.ListDates
             get => 42;
         }
 
-        public ListDates() : this(new DateTimeModel() { DateTime = DateTime.Now, IsBlackout = false }) { }
+        public ListDates() : this(new DateTimeModel()) { }
 
         public ListDates(DateTimeModel dateTimeModel) : base(dateTimeModel)
         {
@@ -53,9 +53,9 @@ namespace ProCalendar.Core.ListDates
                 {
                     DateTime = remainingDateTime,
                     IsWeekend = this.GetIsWeekend(remainingDateTime),
-                    IsBlackout = false,
-                    IsSelected = false,
-                    IsDisabled = false,
+                    IsBlackout = this.CurrentDay.IsBlackout,
+                    IsSelected = this.CurrentDay.IsSelected,
+                    IsDisabled = this.CurrentDay.IsDisabled,
                     IsToday = this.GetIsToday(remainingDateTime)
                 };
 

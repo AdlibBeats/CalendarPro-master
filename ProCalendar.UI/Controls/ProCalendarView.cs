@@ -35,6 +35,7 @@ namespace ProCalendar.UI.Controls
             if (ContentTemplateRoot == null) return;
 
             this.ContentTemplateRoot.Loaded += ContentTemplateRoot_Loaded;
+            //this.ContentTemplateRoot.SelectionChanged += ContentTemplateRoot_SelectionChanged;
 
             var previousButtonVertical = this.GetTemplateChild("PreviousButtonVertical") as Button;
             if (previousButtonVertical == null) return;
@@ -57,7 +58,7 @@ namespace ProCalendar.UI.Controls
 
         private void ContentTemplateRoot_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!IsContentTemplateRootLoaded)
+            if (!this.IsContentTemplateRootLoaded)
             {
                 this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot as StackPanel;
                 if (this.ItemsPanelRoot == null) return;
@@ -78,76 +79,12 @@ namespace ProCalendar.UI.Controls
                 }
             }
 
-            IsContentTemplateRootLoaded = true;
+            this.IsContentTemplateRootLoaded = true;
 
             if (this.SelectedItem != null)
                 UpdateSelectedItem(i => i.IsSelected);
             else
                 UpdateSelectedItem(i => i.IsToday);
-        }
-
-        private void AdaptiveGridView_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-            var selectedItemEventArgs = e as SelectedItemEventArgs;
-            if (selectedItemEventArgs == null) return;
-
-            var selectedItem = selectedItemEventArgs.SelectedItem;
-            if (selectedItem == null) return;
-
-            this.SelectedItem = selectedItem;
-
-            var selectedDateTimeModel = selectedItem.DataContext as DateTimeModel;
-            if (selectedDateTimeModel == null) return;
-
-            this.SelectedDateTimeModel = selectedDateTimeModel;
-
-            this.Children.ForEach((AdaptiveGridView adaptiveGridView) =>
-            {
-                adaptiveGridView.Children.ForEach((CalendarToggleButton calendarToggleButton) =>
-                {
-                    switch (this.SelectionMode)
-                    {
-                        case AdaptiveGridViewSelectionMode.None:
-                            {
-                                break;
-                            }
-                        case AdaptiveGridViewSelectionMode.Single:
-                            {
-                                var data = calendarToggleButton.DataContext as DateTimeModel;
-                                if (data == null) return;
-
-                                if (selectedDateTimeModel.IsSelected)
-                                {
-                                    if (!selectedDateTimeModel.Equals(data.DateTime))
-                                        data.IsSelected = false;
-                                    else
-                                        data.IsSelected = true;
-                                }
-                                else if (selectedDateTimeModel.Equals(data.DateTime))
-                                    data.IsSelected = false;
-                                break;
-                            }
-                        case AdaptiveGridViewSelectionMode.Multiple:
-                            {
-                                //TODO: List<SelectedItem> ...
-                                break;
-                            }
-                        case AdaptiveGridViewSelectionMode.Extended:
-                            {
-                                break;
-                            }
-                    }
-                });
-            });
-
-            if (selectedDateTimeModel.IsSelected)
-                SelectionChanged?.Invoke(selectedItem, new SelectedItemEventArgs(selectedItem, selectedDateTimeModel));
-            else
-            {
-                this.SelectedItem = null;
-
-                UnselectionChanged?.Invoke(selectedItem, new SelectedItemEventArgs(selectedItem, selectedDateTimeModel));
-            }
         }
 
         private void UpdateSelectedItem(Predicate<DateTimeModel> func)
@@ -166,6 +103,103 @@ namespace ProCalendar.UI.Controls
                         this.ContentTemplateRoot.SelectedIndex = index;
                 index++;
             }
+        }
+
+        private void AdaptiveGridView_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            var selectedItemEventArgs = e as SelectedItemEventArgs;
+            if (selectedItemEventArgs == null) return;
+
+            var selectedItem = selectedItemEventArgs.SelectedItem;
+            if (selectedItem == null) return;
+
+            this.SelectedItem = selectedItem;
+
+            var selectedDateTimeModel = selectedItem.DataContext as DateTimeModel;
+            if (selectedDateTimeModel == null) return;
+
+            this.SelectedDateTimeModel = selectedDateTimeModel;
+
+            UpdateChildren();
+
+            UpdateSelectionChangedEvents();
+        }
+
+        private void UpdateSelectionChangedEvents()
+        {
+            if (this.SelectedDateTimeModel.IsSelected)
+                SelectionChanged?.Invoke(this.SelectedItem, new SelectedItemEventArgs(this.SelectedItem, this.SelectedDateTimeModel));
+            else
+            {
+                this.SelectedItem = null;
+                this.SelectedDateTimeModel = null;
+
+                UnselectionChanged?.Invoke(null, new SelectedItemEventArgs(null, null));
+            }
+        }
+
+        private void UpdateChildren()
+        {
+            this.Children.ForEach((AdaptiveGridView adaptiveGridView) =>
+            {
+                adaptiveGridView.Children.ForEach((CalendarToggleButton calendarToggleButton) =>
+                {
+                    switch (this.SelectionMode)
+                    {
+                        case ProCalendarViewSelectionMode.None:
+                            {
+                                UpdateNoneMode(calendarToggleButton);
+                                break;
+                            }
+                        case ProCalendarViewSelectionMode.Single:
+                            {
+                                UpdateSingleMode(calendarToggleButton);
+                                break;
+                            }
+                        case ProCalendarViewSelectionMode.Multiple:
+                            {
+                                UpdateMultipleMode(calendarToggleButton);
+                                break;
+                            }
+                        case ProCalendarViewSelectionMode.Extended:
+                            {
+                                UpdateExtendedMode(calendarToggleButton);
+                                break;
+                            }
+                    }
+                });
+            });
+        }
+
+        private void UpdateNoneMode(CalendarToggleButton calendarToggleButton)
+        {
+            //TODO:
+        }
+
+        private void UpdateSingleMode(CalendarToggleButton calendarToggleButton)
+        {
+            var data = calendarToggleButton.DataContext as DateTimeModel;
+            if (data == null) return;
+
+            if (this.SelectedDateTimeModel.IsSelected)
+            {
+                if (!this.SelectedDateTimeModel.Equals(data.DateTime))
+                    data.IsSelected = false;
+                else
+                    data.IsSelected = true;
+            }
+            else if (this.SelectedDateTimeModel.Equals(data.DateTime))
+                data.IsSelected = false;
+        }
+
+        private void UpdateMultipleMode(CalendarToggleButton calendarToggleButton)
+        {
+            //TODO:
+        }
+
+        private void UpdateExtendedMode(CalendarToggleButton calendarToggleButton)
+        {
+            //TODO:
         }
 
         public bool IsContentTemplateRootLoaded
@@ -213,14 +247,14 @@ namespace ProCalendar.UI.Controls
         public static readonly DependencyProperty SelectedItemProperty =
             DependencyProperty.Register("SelectedItem", typeof(CalendarToggleButton), typeof(ProCalendarView), new PropertyMetadata(null));
 
-        public AdaptiveGridViewSelectionMode SelectionMode
+        public ProCalendarViewSelectionMode SelectionMode
         {
-            get { return (AdaptiveGridViewSelectionMode)GetValue(SelectionModeProperty); }
+            get { return (ProCalendarViewSelectionMode)GetValue(SelectionModeProperty); }
             set { SetValue(SelectionModeProperty, value); }
         }
 
         public static readonly DependencyProperty SelectionModeProperty =
-            DependencyProperty.Register("SelectionMode", typeof(AdaptiveGridViewSelectionMode), typeof(ProCalendarView), new PropertyMetadata(AdaptiveGridViewSelectionMode.Single));
+            DependencyProperty.Register("SelectionMode", typeof(ProCalendarViewSelectionMode), typeof(ProCalendarView), new PropertyMetadata(ProCalendarViewSelectionMode.Single));
 
         public List<AdaptiveGridView> Children
         {

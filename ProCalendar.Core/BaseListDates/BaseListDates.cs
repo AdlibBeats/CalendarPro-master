@@ -53,7 +53,7 @@ namespace ProCalendar.Core.BaseListDates
             set => SetValue(ref _isDisabled, value);
         }
         private bool _isDisabled;
-
+        
         public bool IsWeekend
         {
             get => _isWeekend;
@@ -75,38 +75,17 @@ namespace ProCalendar.Core.BaseListDates
         }
         private DateTime _dateTime;
 
-        public override bool Equals(object obj)
-        {
-            if (obj is DateTime)
-            {
-                var dateTime = (DateTime)obj;
-                if (this.DateTime.Year == dateTime.Year &&
-                    this.DateTime.Month == dateTime.Month &&
-                    this.DateTime.Day == dateTime.Day)
-                    return true;
-                else
-                    return false;
-            }
-            else
-                return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public bool Equals(DateTime dateTime) =>
+            this.DateTime.Year == dateTime.Year &&
+            this.DateTime.Month == dateTime.Month &&
+            this.DateTime.Day == dateTime.Day;
     }
 
     public class BaseListDates<T> : BaseModel
     {
-        public BaseListDates() : this(new DateTimeModel() { DateTime = DateTime.Now, IsBlackout = false })
+        public BaseListDates(DateTimeModel currentDay)
         {
-
-        }
-
-        public BaseListDates(DateTimeModel currentDate)
-        {
-            CurrentDay = currentDate;
+            CurrentDay = currentDay;
 
             this.Initialize();
         }
@@ -124,9 +103,9 @@ namespace ProCalendar.Core.BaseListDates
                 {
                     DateTime = dateTime,
                     IsWeekend = this.GetIsWeekend(dateTime),
-                    IsBlackout = false,
-                    IsSelected = false,
-                    IsDisabled = false,
+                    IsBlackout = this.CurrentDay.IsBlackout,
+                    IsSelected = this.CurrentDay.IsSelected,
+                    IsDisabled = this.CurrentDay.IsDisabled,
                     IsToday = this.GetIsToday(dateTime)
                 };
 

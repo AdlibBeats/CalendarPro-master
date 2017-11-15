@@ -15,7 +15,7 @@ namespace ProCalendar.UI.Controls
     {
         private Button _loadingButton;
         private ProgressRing _loadingProgress;
-        private ProCalendarView _proCalendar;
+        private ProCalendarView _proCalendarView;
         private Flyout _rootFlyout;
         private Image _calendarIcon;
         private TextBlock _dateText;
@@ -45,19 +45,19 @@ namespace ProCalendar.UI.Controls
             _loadingButton = this.GetTemplateChild("LoadingButton") as Button;
             if (_loadingButton == null) return;
 
-            _loadingButton.Tapped += loadTextBox_Tapped;
+            _loadingButton.Tapped += loadingButton_Tapped;
 
             _dateText = this.GetTemplateChild("DateText") as TextBlock;
             if (_dateText == null) return;
 
-            _proCalendar = this.GetTemplateChild("ProCalendar") as ProCalendarView;
-            if (_proCalendar == null) return;
+            _proCalendarView = this.GetTemplateChild("ProCalendarView") as ProCalendarView;
+            if (_proCalendarView == null) return;
 
-            _proCalendar.SelectionChanged += ProCalendar_SelectionChanged;
-            _proCalendar.UnselectionChanged += ProCalendar_UnselectionChanged;
+            _proCalendarView.SelectionChanged += ProCalendar_SelectionChanged;
+            _proCalendarView.UnselectionChanged += ProCalendar_UnselectionChanged;
         }
 
-        private async void loadTextBox_Tapped(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void loadingButton_Tapped(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             _calendarIcon.Visibility = Visibility.Collapsed;
             _loadingProgress.IsActive = true;

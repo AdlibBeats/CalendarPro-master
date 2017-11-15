@@ -18,7 +18,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="BorderBrush" Value="Gray"/>
-            <Setter Property="BorderThickness" Value="0, 0, 0.5, 0.5"/>
+            <Setter Property="BorderThickness" Value="0,0,0.5,0.5"/>
             <Setter Property="Margin" Value="0"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Template">
@@ -73,12 +73,12 @@
                                     </VisualState>
                                 </VisualStateGroup>
                                 <VisualStateGroup x:Name="CalendarStates">
-                                    <VisualState x:Name="ToodayTrue">
+                                    <VisualState x:Name="IsToodayTrue">
                                         <VisualState.Setters>
                                             <Setter Target="toodayRectangle.Visibility" Value="Visible"/>
                                         </VisualState.Setters>
                                     </VisualState>
-                                    <VisualState x:Name="ToodayFalse">
+                                    <VisualState x:Name="IsToodayFalse">
                                         <VisualState.Setters>
                                             <Setter Target="toodayRectangle.Visibility" Value="Collapsed"/>
                                         </VisualState.Setters>
@@ -108,6 +108,14 @@
                                             <Setter Target="WeekendBorder.Background" Value="{StaticResource Static.DateTimeToggleButton.Background.IsWeekendPointerOver}"/>
                                             <Setter Target="RootContent.Foreground" Value="{StaticResource Static.DateTimeToggleButton.Foreground.PointerOver}"/>
                                             <!--<Setter Target="RootBorder.BorderBrush" Value="{StaticResource Static.DateTimeToggleButton.BorderBrush.PointerOver}"/>-->
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Blackouted">
+                                        <VisualState.Setters>
+                                            <Setter Target="Root.Background" Value="{StaticResource Static.DateTimeToggleButton.Background.Blackouted}"/>
+                                            <Setter Target="WeekendBorder.Background" Value="{StaticResource Static.DateTimeToggleButton.Background.IsWeekendBlackouted}"/>
+                                            <Setter Target="RootContent.Foreground" Value="{StaticResource Static.DateTimeToggleButton.Foreground.Blackouted}"/>
+                                            <!--<Setter Target="RootBorder.BorderBrush" Value="{StaticResource Static.DateTimeToggleButton.BorderBrush.Blackouted}"/>-->
                                         </VisualState.Setters>
                                     </VisualState>
                                     <VisualState x:Name="Disabled">
@@ -141,6 +149,14 @@
                                             <Setter Target="WeekendBorder.Background" Value="{StaticResource Static.DateTimeToggleButton.Background.CheckedPointerOver}"/>
                                             <Setter Target="RootContent.Foreground" Value="{StaticResource Static.DateTimeToggleButton.Foreground.CheckedPointerOver}"/>
                                             <!--<Setter Target="RootBorder.BorderBrush" Value="{StaticResource Static.DateTimeToggleButton.BorderBrush.CheckedPointerOver}"/>-->
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="CheckedBlackouted">
+                                        <VisualState.Setters>
+                                            <Setter Target="Root.Background" Value="{StaticResource Static.DateTimeToggleButton.Background.CheckedBlackouted}"/>
+                                            <Setter Target="WeekendBorder.Background" Value="{StaticResource Static.DateTimeToggleButton.Background.CheckedBlackouted}"/>
+                                            <Setter Target="RootContent.Foreground" Value="{StaticResource Static.DateTimeToggleButton.Foreground.CheckedBlackouted}"/>
+                                            <!--<Setter Target="RootBorder.BorderBrush" Value="{StaticResource Static.DateTimeToggleButton.BorderBrush.CheckedBlackouted}"/>-->
                                         </VisualState.Setters>
                                     </VisualState>
                                     <VisualState x:Name="CheckedDisabled">

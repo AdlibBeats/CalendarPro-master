@@ -62,55 +62,70 @@ namespace ProCalendar.Core.ListDates
             {
                 case ProListDatesLoadingType.LoadingYears:
                     {
-                        for (DateTime i = Min; i <= Max;)
-                        {
-                            for (int j = 1; j <= 12; j++)
-                            {
-                                var dateTime = new DateTime(i.Year, j, 1);
-
-                                var dateTimeModel = new DateTimeModel()
-                                {
-                                    DateTime = dateTime,
-                                    IsWeekend = this.GetIsWeekend(dateTime),
-                                    IsBlackout = false,
-                                    IsSelected = false,
-                                    IsDisabled = false,
-                                    IsToday = this.GetIsToday(dateTime)
-                                };
-
-                                ListDates.Add(new ListDates(dateTimeModel));
-                            }
-                            i = i.AddYears(1);
-                        }
+                        LoadYears();
                         break;
                     }
                 case ProListDatesLoadingType.LoadingMonths:
                     {
-                        for (DateTime j = Min; j <= Max;)
-                        {
-                            var dateTime = new DateTime(j.Year, j.Month, 1);
-
-                            var dateTimeModel = new DateTimeModel()
-                            {
-                                DateTime = dateTime,
-                                IsWeekend = this.GetIsWeekend(dateTime),
-                                IsBlackout = false,
-                                IsSelected = false,
-                                IsDisabled = false,
-                                IsToday = this.GetIsToday(dateTime)
-                            };
-
-                            ListDates.Add(new ListDates(dateTimeModel));
-                            j = j.AddMonths(1);
-                        }
+                        LoadMonths();
                         break;
                     }
                 case ProListDatesLoadingType.LoadingDays:
                     {
-                        //TODO: ProListDatesLoadingType.LoadingDays
+                        LoadDays();
                         break;
                     }
             }
+        }
+
+        private void LoadYears()
+        {
+            for (DateTime i = Min; i <= Max;)
+            {
+                for (int j = 1; j <= 12; j++)
+                {
+                    var dateTime = new DateTime(i.Year, j, 1);
+
+                    var dateTimeModel = new DateTimeModel()
+                    {
+                        DateTime = dateTime,
+                        IsWeekend = this.GetIsWeekend(dateTime),
+                        IsBlackout = false,
+                        IsSelected = false,
+                        IsDisabled = false,
+                        IsToday = this.GetIsToday(dateTime)
+                    };
+
+                    ListDates.Add(new ListDates(dateTimeModel));
+                }
+                i = i.AddYears(1);
+            }
+        }
+
+        private void LoadMonths()
+        {
+            for (DateTime j = Min; j <= Max;)
+            {
+                var dateTime = new DateTime(j.Year, j.Month, 1);
+
+                var dateTimeModel = new DateTimeModel()
+                {
+                    DateTime = dateTime,
+                    IsWeekend = this.GetIsWeekend(dateTime),
+                    IsBlackout = false,
+                    IsSelected = false,
+                    IsDisabled = false,
+                    IsToday = this.GetIsToday(dateTime)
+                };
+
+                ListDates.Add(new ListDates(dateTimeModel));
+                j = j.AddMonths(1);
+            }
+        }
+
+        private void LoadDays()
+        {
+            //TODO: 
         }
 
         public bool GetIsWeekend(DateTime dateTime) =>

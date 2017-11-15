@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Media;
 
 namespace ProCalendar.UI.Controls
 {
-    public enum AdaptiveGridViewSelectionMode
+    public enum ProCalendarViewSelectionMode
     {
         None,
         Single,
