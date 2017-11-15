@@ -16,9 +16,9 @@ namespace ProCalendar.Core.ListDates
             get => 42;
         }
 
-        public ListDates() : this(new DateTimeModel()) { }
+        public ListDates() : this(new DateTimeModel(), DateTime.Now) { }
 
-        public ListDates(DateTimeModel dateTimeModel) : base(dateTimeModel)
+        public ListDates(DateTimeModel dateTimeModel, params DateTime[] blackoutDays) : base(dateTimeModel, blackoutDays)
         {
             this.Initialize();
         }
@@ -27,22 +27,18 @@ namespace ProCalendar.Core.ListDates
         {
             int count = 0;
             this.ContentDays = new ObservableCollection<DateTimeModel>();
-            
-            DateTime datetime =
-                new DateTime(CurrentDay.DateTime.Year, CurrentDay.DateTime.Month, 1);
 
-            int dayOfWeek = (int)this.CurrentDays[0].DateTime.DayOfWeek;
+            int dayOfWeek = (int)this.CurrentDay.DateTime.DayOfWeek;
 
             count = (dayOfWeek == 0) ? 6 : dayOfWeek - 1;
-            
             if (count != 0)
-                AddRemainingDates(count, datetime.AddDays(-count));
+                AddRemainingDates(count, this.CurrentDay.DateTime.AddDays(-count));
 
-            foreach (var dateTimeModel in CurrentDays)
-                ContentDays.Add(dateTimeModel);
+            foreach (var dateTimeModel in this.CurrentDays)
+                this.ContentDays.Add(dateTimeModel);
 
-            count = ContentDaysCapacity - ContentDays.Count;
-            AddRemainingDates(count, datetime.AddMonths(1));
+            count = this.ContentDaysCapacity - this.ContentDays.Count;
+            AddRemainingDates(count, this.CurrentDay.DateTime.AddMonths(1));
         }
 
         private void AddRemainingDates(int daysCount, DateTime remainingDateTime)
@@ -53,13 +49,13 @@ namespace ProCalendar.Core.ListDates
                 {
                     DateTime = remainingDateTime,
                     IsWeekend = this.GetIsWeekend(remainingDateTime),
-                    IsBlackout = this.CurrentDay.IsBlackout,
+                    IsBlackout = this.GetIsBlackout(remainingDateTime),
                     IsSelected = this.CurrentDay.IsSelected,
                     IsDisabled = this.CurrentDay.IsDisabled,
                     IsToday = this.GetIsToday(remainingDateTime)
                 };
 
-                ContentDays.Add(dateTimeModel);
+                this.ContentDays.Add(dateTimeModel);
                 remainingDateTime = remainingDateTime.AddDays(1);
             }
         }

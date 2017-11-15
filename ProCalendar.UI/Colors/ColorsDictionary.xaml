@@ -18,24 +18,24 @@
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.Normal" Color="Black"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.PointerOver" Color="Black"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.Pressed" Color="Black"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.Blackouted" Color="Gray"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.Disabled" Color="Black"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.Blackouted" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.Disabled" Color="White"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.Checked" Color="White"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.CheckedPointerOver" Color="White"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.CheckedPressed" Color="White"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.CheckedBlackouted" Color="White"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.CheckedDisabled" Color="White"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.Indeterminate" Color="Black"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminatePointerOver" Color="Black"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminatePressed" Color="Black"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminateBlackouted" Color="White"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminateDisabled" Color="White"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.CheckedBlackouted" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.CheckedDisabled" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.Indeterminate" Color="White"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminatePointerOver" Color="White"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminatePressed" Color="White"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminateBlackouted" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Foreground.IndeterminateDisabled" Color="#CCCCCC"/>
 
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendNormal" Color="#FFDADADA"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendPointerOver" Color="#FFDADADA"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendPressed" Color="#FFDADADA"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendBlackouted" Color="#FFDADADA"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendDisabled" Color="#FFDADADA"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendNormal" Color="#E6E6E6"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendPointerOver" Color="#E6E6E6"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendPressed" Color="#E6E6E6"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendBlackouted" Color="#E6E6E6"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IsWeekendDisabled" Color="White"/>
     
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.Normal" Color="White"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.PointerOver" Color="White"/>
@@ -45,28 +45,28 @@
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.Checked" Color="Red"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.CheckedPointerOver" Color="Red"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.CheckedPressed" Color="Red"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.CheckedBlackouted" Color="Red"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.CheckedDisabled" Color="Red"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.CheckedBlackouted" Color="#FFA44040"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.CheckedDisabled" Color="#CCCCCC"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.Indeterminate" Color="Red"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IndeterminatePointerOver" Color="Red"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IndeterminatePressed" Color="Red"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IndeterminateBlackouted" Color="Red"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IndeterminateDisabled" Color="Red"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IndeterminateBlackouted" Color="#FFA44040"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.Background.IndeterminateDisabled" Color="#CCCCCC"/>
 
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Normal" Color="Gray"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.PointerOver" Color="Gray"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Pressed" Color="Gray"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Blackouted" Color="Gray"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Disabled" Color="Gray"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Normal" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.PointerOver" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Pressed" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Blackouted" Color="White"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Disabled" Color="White"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Checked" Color="Red"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.CheckedPointerOver" Color="Red"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.CheckedPressed" Color="Red"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.CheckedBlackouted" Color="Gray"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.CheckedDisabled" Color="Gray"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.CheckedBlackouted" Color="#FFA44040"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.CheckedDisabled" Color="#CCCCCC"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.Indeterminate" Color="Red"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.IndeterminatePointerOver" Color="Red"/>
     <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.IndeterminatePressed" Color="Red"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.IndeterminateBlackouted" Color="Red"/>
-    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.IndeterminateDisabled" Color="Red"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.IndeterminateBlackouted" Color="#FFA44040"/>
+    <SolidColorBrush x:Key="Static.DateTimeToggleButton.BorderBrush.IndeterminateDisabled" Color="#CCCCCC"/>
     
 </ResourceDictionary>

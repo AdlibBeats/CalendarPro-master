@@ -83,16 +83,19 @@ namespace ProCalendar.Core.BaseListDates
 
     public class BaseListDates<T> : BaseModel
     {
-        public BaseListDates(DateTimeModel currentDay)
+        public BaseListDates(DateTimeModel currentDay, params DateTime[] blackoutDays)
         {
-            CurrentDay = currentDay;
+            this.CurrentDay = currentDay;
+
+            if (blackoutDays != null && blackoutDays.Any())
+                this.BlackoutDays = new List<DateTime>(blackoutDays);
 
             this.Initialize();
         }
 
         private void Initialize()
         {
-            CurrentDays = new ObservableCollection<DateTimeModel>();
+            this.CurrentDays = new ObservableCollection<DateTimeModel>();
 
             int countDays = DateTime.DaysInMonth(CurrentDay.DateTime.Year, CurrentDay.DateTime.Month);
             for (int day = 1; day <= countDays; day++)
@@ -103,14 +106,27 @@ namespace ProCalendar.Core.BaseListDates
                 {
                     DateTime = dateTime,
                     IsWeekend = this.GetIsWeekend(dateTime),
-                    IsBlackout = this.CurrentDay.IsBlackout,
+                    IsBlackout = this.GetIsBlackout(dateTime),
                     IsSelected = this.CurrentDay.IsSelected,
                     IsDisabled = this.CurrentDay.IsDisabled,
                     IsToday = this.GetIsToday(dateTime)
                 };
 
-                CurrentDays.Add(dateTimeModel);
+                this.CurrentDays.Add(dateTimeModel);
             }
+        }
+
+        public virtual bool GetIsBlackout(DateTime dateTime)
+        {
+            if (BlackoutDays == null || !BlackoutDays.Any()) return false;
+
+            var blackoutDay =
+                this.BlackoutDays.FirstOrDefault(i =>
+                    i.Year == dateTime.Year &&
+                    i.Month == dateTime.Month &&
+                    i.Day == dateTime.Day);
+
+            return blackoutDay.Year != 0001;
         }
 
         public virtual bool GetIsWeekend(DateTime dateTime) =>
@@ -120,6 +136,15 @@ namespace ProCalendar.Core.BaseListDates
             dateTime.Year == DateTime.Now.Year &&
             dateTime.Month == DateTime.Now.Month &&
             dateTime.Day == DateTime.Now.Day;
+
+        public List<DateTime> BlackoutDays
+        {
+            get { return (List<DateTime>)GetValue(BlackoutDaysProperty); }
+            set { SetValue(BlackoutDaysProperty, value); }
+        }
+
+        public static readonly DependencyProperty BlackoutDaysProperty =
+            DependencyProperty.Register("BlackoutDays", typeof(List<DateTime>), typeof(BaseListDates<T>), new PropertyMetadata(null));
 
         public DateTimeModel CurrentDay
         {

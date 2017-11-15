@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using ProCalendar.Core.BaseListDates;
+using System.Diagnostics;
 
 namespace ProCalendar.Core.ListDates
 {
@@ -39,26 +40,26 @@ namespace ProCalendar.Core.ListDates
         }
         private ProListDatesLoadingType _proListDatesLoadingType;
 
-        public ProListDates() : this(DateTime.Now, DateTime.Now.AddMonths(3), ProListDatesLoadingType.LoadingMonths)
+        public ProListDates() : this(DateTime.Now, DateTime.Now.AddMonths(3), ProListDatesLoadingType.LoadingMonths, DateTime.Now.AddDays(3), DateTime.Now.AddDays(12))
         {
 
         }
 
-        public ProListDates(DateTime min, DateTime max, ProListDatesLoadingType proListDatesLoadingType)
+        public ProListDates(DateTime min, DateTime max, ProListDatesLoadingType proListDatesLoadingType, params DateTime[] blackoutDays)
         {
-            ProListDatesLoadingType = proListDatesLoadingType;
-
-            Min = min;
-            Max = max;
+            this.BlackoutDays = blackoutDays;
+            this.ProListDatesLoadingType = proListDatesLoadingType;
+            this.Min = min;
+            this.Max = max;
 
             Initialize();
         }
 
         private void Initialize()
         {
-            ListDates = new ObservableCollection<ListDates>();
+            this.ListDates = new ObservableCollection<ListDates>();
 
-            switch (ProListDatesLoadingType)
+            switch (this.ProListDatesLoadingType)
             {
                 case ProListDatesLoadingType.LoadingYears:
                     {
@@ -80,7 +81,7 @@ namespace ProCalendar.Core.ListDates
 
         private void LoadYears()
         {
-            for (DateTime i = Min; i <= Max;)
+            for (DateTime i = this.Min; i <= this.Max;)
             {
                 for (int j = 1; j <= 12; j++)
                 {
@@ -89,14 +90,14 @@ namespace ProCalendar.Core.ListDates
                     var dateTimeModel = new DateTimeModel()
                     {
                         DateTime = dateTime,
-                        IsWeekend = this.GetIsWeekend(dateTime),
+                        IsWeekend = false,
                         IsBlackout = false,
                         IsSelected = false,
                         IsDisabled = false,
-                        IsToday = this.GetIsToday(dateTime)
+                        IsToday = false
                     };
 
-                    ListDates.Add(new ListDates(dateTimeModel));
+                    this.ListDates.Add(new ListDates(dateTimeModel));
                 }
                 i = i.AddYears(1);
             }
@@ -104,22 +105,22 @@ namespace ProCalendar.Core.ListDates
 
         private void LoadMonths()
         {
-            for (DateTime j = Min; j <= Max;)
+            for (DateTime i = this.Min; i <= this.Max;)
             {
-                var dateTime = new DateTime(j.Year, j.Month, 1);
+                var dateTime = new DateTime(i.Year, i.Month, 1);
 
                 var dateTimeModel = new DateTimeModel()
                 {
                     DateTime = dateTime,
-                    IsWeekend = this.GetIsWeekend(dateTime),
+                    IsWeekend = false,
                     IsBlackout = false,
                     IsSelected = false,
                     IsDisabled = false,
-                    IsToday = this.GetIsToday(dateTime)
+                    IsToday = false
                 };
 
-                ListDates.Add(new ListDates(dateTimeModel));
-                j = j.AddMonths(1);
+                this.ListDates.Add(new ListDates(dateTimeModel, this.BlackoutDays));
+                i = i.AddMonths(1);
             }
         }
 
@@ -128,13 +129,14 @@ namespace ProCalendar.Core.ListDates
             //TODO: 
         }
 
-        public bool GetIsWeekend(DateTime dateTime) =>
-            dateTime.DayOfWeek == DayOfWeek.Saturday || dateTime.DayOfWeek == DayOfWeek.Sunday;
+        public DateTime[] BlackoutDays
+        {
+            get { return (DateTime[])GetValue(BlackoutDaysProperty); }
+            set { SetValue(BlackoutDaysProperty, value); }
+        }
 
-        public bool GetIsToday(DateTime dateTime) =>
-            dateTime.Year == DateTime.Now.Year &&
-            dateTime.Month == DateTime.Now.Month &&
-            dateTime.Day == DateTime.Now.Day;
+        public static readonly DependencyProperty BlackoutDaysProperty =
+            DependencyProperty.Register("BlackoutDays", typeof(List<DateTime>), typeof(ProListDates), new PropertyMetadata(null));
 
         public ObservableCollection<ListDates> ListDates
         {

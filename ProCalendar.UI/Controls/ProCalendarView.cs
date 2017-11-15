@@ -100,7 +100,11 @@ namespace ProCalendar.UI.Controls
             {
                 foreach (var y in x.ContentDays)
                     if (func.Invoke(y))
+                    {
                         this.ContentTemplateRoot.SelectedIndex = index;
+                        if (y.DateTime.Day > 20)
+                            return;
+                    }
                 index++;
             }
         }
