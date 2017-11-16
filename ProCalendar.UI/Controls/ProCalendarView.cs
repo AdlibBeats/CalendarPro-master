@@ -35,7 +35,7 @@ namespace ProCalendar.UI.Controls
             if (ContentTemplateRoot == null) return;
 
             this.ContentTemplateRoot.Loaded += ContentTemplateRoot_Loaded;
-            //this.ContentTemplateRoot.SelectionChanged += ContentTemplateRoot_SelectionChanged;
+            this.ContentTemplateRoot.SelectionChanged += ContentTemplateRoot_SelectionChanged;
 
             var previousButtonVertical = this.GetTemplateChild("PreviousButtonVertical") as Button;
             if (previousButtonVertical == null) return;
@@ -54,6 +54,50 @@ namespace ProCalendar.UI.Controls
                 if (ContentTemplateRoot.Items.Count - 1 > ContentTemplateRoot.SelectedIndex)
                     ContentTemplateRoot.SelectedIndex++;
             };
+        }
+
+        private int _contentTemplateRoot_CurrentIndex = 0;
+        private void ContentTemplateRoot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.ContentTemplateRoot.SelectedIndex > -1)
+            {
+                var itemsSource = ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
+                if (itemsSource == null) return;
+
+                if (_contentTemplateRoot_CurrentIndex < this.ContentTemplateRoot.SelectedIndex)
+                {
+                    Debug.WriteLine("Вниз (Вперёд)");
+
+                    UpdateSelectedItems(itemsSource, itemsSource.ElementAt(this.ContentTemplateRoot.SelectedIndex - 1));
+                }
+                else
+                {
+                    Debug.WriteLine("Вверх (назад)");
+
+                    UpdateSelectedItems(itemsSource, itemsSource.ElementAt(this.ContentTemplateRoot.SelectedIndex + 1));
+                }
+
+                _contentTemplateRoot_CurrentIndex =
+                    this.ContentTemplateRoot.SelectedIndex;
+            }
+        }
+
+        private void UpdateSelectedItems(ObservableCollection<ListDates> itemsSource, ListDates listDates)
+        {
+            foreach (var date in listDates.ContentDays)
+            {
+                if (date.IsSelected)
+                {
+                    var currentListDates =
+                        itemsSource.ElementAt(this.ContentTemplateRoot.SelectedIndex);
+
+                    var currentDateTimeModel = currentListDates.ContentDays.FirstOrDefault(i => i.Equals(date.DateTime));
+                    if (currentDateTimeModel == null) continue;
+
+                    currentDateTimeModel.IsSelected = true;
+                    date.IsSelected = false;
+                }
+            }
         }
 
         private void ContentTemplateRoot_Loaded(object sender, RoutedEventArgs e)
@@ -82,21 +126,21 @@ namespace ProCalendar.UI.Controls
             this.IsContentTemplateRootLoaded = true;
 
             if (this.SelectedItem != null)
-                UpdateSelectedItem(i => i.IsSelected);
+                LoadSelectedItems(i => i.IsSelected);
             else
-                UpdateSelectedItem(i => i.IsToday);
+                LoadSelectedItems(i => i.IsToday);
         }
 
-        private void UpdateSelectedItem(Predicate<DateTimeModel> func)
+        private void LoadSelectedItems(Predicate<DateTimeModel> func)
         {
             var todayDateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
-            var data = this.ContentTemplateRoot.DataContext as ProListDates;
-            if (data == null) return;
+            var itemsSource = ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
+            if (itemsSource == null) return;
 
             int index = 0;
 
-            foreach (var x in data.ListDates)
+            foreach (var x in itemsSource)
             {
                 foreach (var y in x.ContentDays)
                     if (func.Invoke(y))
@@ -144,6 +188,7 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateChildren()
         {
+            int adaptiveGridViewIndex = 0;
             this.Children.ForEach((AdaptiveGridView adaptiveGridView) =>
             {
                 adaptiveGridView.Children.ForEach((CalendarToggleButton calendarToggleButton) =>
@@ -152,56 +197,57 @@ namespace ProCalendar.UI.Controls
                     {
                         case ProCalendarViewSelectionMode.None:
                             {
-                                UpdateNoneMode(calendarToggleButton);
+                                UpdateNoneMode(adaptiveGridViewIndex, calendarToggleButton);
                                 break;
                             }
                         case ProCalendarViewSelectionMode.Single:
                             {
-                                UpdateSingleMode(calendarToggleButton);
+                                UpdateSingleMode(adaptiveGridViewIndex, calendarToggleButton);
                                 break;
                             }
                         case ProCalendarViewSelectionMode.Multiple:
                             {
-                                UpdateMultipleMode(calendarToggleButton);
+                                UpdateMultipleMode(adaptiveGridViewIndex, calendarToggleButton);
                                 break;
                             }
                         case ProCalendarViewSelectionMode.Extended:
                             {
-                                UpdateExtendedMode(calendarToggleButton);
+                                UpdateExtendedMode(adaptiveGridViewIndex, calendarToggleButton);
                                 break;
                             }
                     }
                 });
+                adaptiveGridViewIndex++;
             });
         }
 
-        private void UpdateNoneMode(CalendarToggleButton calendarToggleButton)
+        private void UpdateNoneMode(int adaptiveGridViewIndex, CalendarToggleButton calendarToggleButton)
         {
             //TODO:
         }
 
-        private void UpdateSingleMode(CalendarToggleButton calendarToggleButton)
+        private void UpdateSingleMode(int adaptiveGridViewIndex, CalendarToggleButton calendarToggleButton)
         {
-            var data = calendarToggleButton.DataContext as DateTimeModel;
-            if (data == null) return;
+            var dataCalendarToggleButton = calendarToggleButton.DataContext as DateTimeModel;
+            if (dataCalendarToggleButton == null) return;
 
-            if (this.SelectedDateTimeModel.IsSelected)
+            if (this.SelectedDateTimeModel.IsSelected && this.ContentTemplateRoot.SelectedIndex == adaptiveGridViewIndex)
             {
-                if (!this.SelectedDateTimeModel.Equals(data.DateTime))
-                    data.IsSelected = false;
+                if (!this.SelectedDateTimeModel.Equals(dataCalendarToggleButton.DateTime))
+                    dataCalendarToggleButton.IsSelected = false;
                 else
-                    data.IsSelected = true;
+                    dataCalendarToggleButton.IsSelected = true;
             }
-            else if (this.SelectedDateTimeModel.Equals(data.DateTime))
-                data.IsSelected = false;
+            else
+                dataCalendarToggleButton.IsSelected = false;
         }
 
-        private void UpdateMultipleMode(CalendarToggleButton calendarToggleButton)
+        private void UpdateMultipleMode(int adaptiveGridViewIndex, CalendarToggleButton calendarToggleButton)
         {
             //TODO:
         }
 
-        private void UpdateExtendedMode(CalendarToggleButton calendarToggleButton)
+        private void UpdateExtendedMode(int adaptiveGridViewIndex, CalendarToggleButton calendarToggleButton)
         {
             //TODO:
         }
