@@ -9,7 +9,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Colors/ColorsDictionary.xaml"/>
         <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Styles/ButtonDictionary.xaml"/>
-        <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Styles/ListBoxItemDictionary.xaml"/>
         <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Styles/FlipViewDictionary.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
