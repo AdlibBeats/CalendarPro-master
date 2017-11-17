@@ -59,8 +59,6 @@ namespace ProCalendar.UI.Controls
             var itemsSource = this.ItemsSource as IEnumerable<object>;
             if (itemsSource == null) return;
 
-            this.Children = new List<ProCalendarToggleButton>();
-
             int column = 0;
             int row = 0;
 
@@ -233,7 +231,7 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ChildrenProperty =
-            DependencyProperty.Register("Children", typeof(List<ProCalendarToggleButton>), typeof(AdaptiveGridView), new PropertyMetadata(null));
+            DependencyProperty.Register("Children", typeof(List<ProCalendarToggleButton>), typeof(AdaptiveGridView), new PropertyMetadata(new List<ProCalendarToggleButton>()));
 
         public Grid ItemsPanelRoot
         {

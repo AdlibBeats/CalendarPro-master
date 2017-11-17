@@ -77,8 +77,6 @@ namespace ProCalendar.UI.Controls
             this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot as StackPanel;
             if (this.ItemsPanelRoot == null) return;
 
-            this.Children = new List<AdaptiveGridView>();
-
             for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
             {
                 var selectorItem = this.ItemsPanelRoot.Children.ElementAtOrDefault(i) as SelectorItem;
@@ -307,6 +305,6 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ChildrenProperty =
-            DependencyProperty.Register("Children", typeof(List<AdaptiveGridView>), typeof(ProCalendarView), new PropertyMetadata(null));
+            DependencyProperty.Register("Children", typeof(List<AdaptiveGridView>), typeof(ProCalendarView), new PropertyMetadata(new List<AdaptiveGridView>()));
     }
 }
