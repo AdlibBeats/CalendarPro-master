@@ -80,7 +80,11 @@ namespace ProCalendar.UI.Controls
             int column = 0;
             int row = 0;
 
-            for (int i = 0; i < this.RowsCount * this.ColumnsCount; i++)
+            int contentCount = this.RowsCount * this.ColumnsCount;
+
+            int count = collection.Count() < contentCount ? collection.Count() : contentCount;
+
+            for (int i = 0; i < count; i++)
             {
                 var content = LoadItemTemplateContent(column, row, collection.ElementAt(i));
                 if (content == null) return;
