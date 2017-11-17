@@ -1,18 +1,9 @@
 ﻿using ProCalendar.Core.BaseListDates;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
 namespace ProCalendar.UI.Controls
@@ -21,12 +12,7 @@ namespace ProCalendar.UI.Controls
     {
         public ProCalendarToggleButton SelectedItem { get; }
         public DateTimeModel DateTimeModel { get; }
-
-        public SelectedItemEventArgs()
-        {
-
-        }
-
+        public SelectedItemEventArgs() { }
         public SelectedItemEventArgs(ProCalendarToggleButton selectedItem, DateTimeModel dateTimeModel)
         {
             SelectedItem = selectedItem;

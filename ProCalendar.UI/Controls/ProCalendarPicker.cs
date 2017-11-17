@@ -1,13 +1,8 @@
 ﻿using ProCalendar.Core.BaseListDates;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
 
 namespace ProCalendar.UI.Controls
 {
