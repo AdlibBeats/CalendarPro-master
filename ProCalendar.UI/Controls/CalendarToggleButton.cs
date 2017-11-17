@@ -64,50 +64,33 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateStates()
         {
-            switch (this.Model.IsSelected)
-            {
-                case true:
-                    {
-                        if (this.Model.IsDisabled)
-                        {
-                            this.IsEnabled = false;
-                            VisualStateManager.GoToState(this, "CheckedDisabled", true);
-                        }
-                        else if (this.Model.IsBlackout)
-                        {
-                            this.IsEnabled = false;
-                            VisualStateManager.GoToState(this, "CheckedBlackouted", true);
-                        }
-                        else
-                        {
-                            this.IsEnabled = true;
-                            VisualStateManager.GoToState(this, "CheckedNormal", true);
-                        }
-                        break;
-                    }
-                case false:
-                    {
-                        if (this.Model.IsDisabled)
-                        {
-                            this.IsEnabled = false;
-                            VisualStateManager.GoToState(this, "Disabled", true);
-                        }
-                        else if (this.Model.IsBlackout)
-                        {
-                            this.IsEnabled = false;
-                            VisualStateManager.GoToState(this, "Blackouted", true);
-                        }
-                        else
-                        {
-                            this.IsEnabled = true;
-                            VisualStateManager.GoToState(this, "Normal", true);
-                        }
-                        break;
-                    }
-            }
+            if (this.Model.IsSelected)
+                UpdateSelectedStates(i => i.IsDisabled, j => j.IsBlackout, "Checked");
+            else
+                UpdateSelectedStates(i => i.IsDisabled, j => j.IsBlackout);
 
             VisualStateManager.GoToState(this, this.Model.IsToday ? "IsToodayTrue" : "IsToodayFalse", true);
             VisualStateManager.GoToState(this, this.Model.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
+        }
+
+        private void UpdateSelectedStates(Predicate<DateTimeModel> func1, Predicate<DateTimeModel> func2, string stateName = null)
+        {
+            if (func1.Invoke(this.Model))
+            {
+                this.IsEnabled = false;
+                stateName += "Disabled";
+            }
+            else if (func2.Invoke(this.Model))
+            {
+                this.IsEnabled = false;
+                stateName += "Blackouted";
+            }
+            else
+            {
+                this.IsEnabled = true;
+                stateName += "Normal";
+            }
+            VisualStateManager.GoToState(this, stateName, true);
         }
 
         private void ContentControl_PointerPressed(object sender, PointerRoutedEventArgs e)

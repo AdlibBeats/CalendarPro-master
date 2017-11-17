@@ -39,7 +39,7 @@ namespace ProCalendar.UI.Controls
             this.ContentTemplateRoot.SelectionChanged += ContentTemplateRoot_SelectionChanged;
         }
 
-        private void UpdateNavigationButtons(string childName, int navigationIndex, Predicate<Selector> func)
+        private void UpdateNavigationButtons(string childName, int navigatedIndex, Predicate<Selector> func)
         {
             var navigationButton = this.GetTemplateChild(childName) as Button;
             if (navigationButton == null) return;
@@ -47,7 +47,7 @@ namespace ProCalendar.UI.Controls
             navigationButton.Click += (s, e) =>
             {
                 if (func.Invoke(ContentTemplateRoot))
-                    ContentTemplateRoot.SelectedIndex += navigationIndex;
+                    ContentTemplateRoot.SelectedIndex += navigatedIndex;
             };
         }
 
