@@ -39,14 +39,14 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateContentTemplateRoot(string childName)
         {
-            this.ContentTemplateRoot = this.GetTemplateChild(childName) as FlipView;
+            this.ContentTemplateRoot = this.GetTemplateChild(childName) as Selector;
             if (ContentTemplateRoot == null) return;
 
             this.ContentTemplateRoot.Loaded += ContentTemplateRoot_Loaded;
             this.ContentTemplateRoot.SelectionChanged += ContentTemplateRoot_SelectionChanged;
         }
 
-        private void UpdateNavigationButtons(string childName, int navigationIndex, Predicate<FlipView> func)
+        private void UpdateNavigationButtons(string childName, int navigationIndex, Predicate<Selector> func)
         {
             var navigationButton = this.GetTemplateChild(childName) as Button;
             if (navigationButton == null) return;
@@ -69,7 +69,7 @@ namespace ProCalendar.UI.Controls
 
                 for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
                 {
-                    var flipViewItem = this.ItemsPanelRoot.Children.ElementAt(i) as FlipViewItem;
+                    var flipViewItem = this.ItemsPanelRoot.Children.ElementAt(i) as SelectorItem;
                     if (flipViewItem == null) return;
 
                     var adaptiveGridView = flipViewItem.ContentTemplateRoot as AdaptiveGridView;
@@ -256,14 +256,14 @@ namespace ProCalendar.UI.Controls
         public static readonly DependencyProperty IsContentTemplateRootLoadedProperty =
             DependencyProperty.Register("IsContentTemplateRootLoaded", typeof(bool), typeof(ProCalendarView), new PropertyMetadata(false));
 
-        public FlipView ContentTemplateRoot
+        public Selector ContentTemplateRoot
         {
-            get { return (FlipView)GetValue(ContentTemplateRootProperty); }
+            get { return (Selector)GetValue(ContentTemplateRootProperty); }
             private set { SetValue(ContentTemplateRootProperty, value); }
         }
 
         public static readonly DependencyProperty ContentTemplateRootProperty =
-            DependencyProperty.Register("ContentTemplateRoot", typeof(FlipView), typeof(ProCalendarView), new PropertyMetadata(null));
+            DependencyProperty.Register("ContentTemplateRoot", typeof(Selector), typeof(ProCalendarView), new PropertyMetadata(null));
 
         public StackPanel ItemsPanelRoot
         {
