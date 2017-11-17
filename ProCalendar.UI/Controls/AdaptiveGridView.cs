@@ -33,7 +33,7 @@ namespace ProCalendar.UI.Controls
         {
             base.OnApplyTemplate();
             
-            ItemsPanelRoot = this.GetTemplateChild("ItemsPanelRoot") as Grid;
+            this.ItemsPanelRoot = this.GetTemplateChild("ItemsPanelRoot") as Grid;
 
             UpdateItemsPanelRoot();
 
@@ -42,7 +42,7 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateItemsPanelRoot()
         {
-            if (ItemsPanelRoot != null)
+            if (this.ItemsPanelRoot != null)
             {
                 for (int column = 0; column < this.ColumnsCount; column++)
                     this.ItemsPanelRoot.ColumnDefinitions.Add(new ColumnDefinition()
@@ -56,8 +56,8 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateItemsSource()
         {
-            var collection = this.ItemsSource as IEnumerable<object>;
-            if (collection == null) return;
+            var itemsSource = this.ItemsSource as IEnumerable<object>;
+            if (itemsSource == null) return;
 
             this.Children = new List<ProCalendarToggleButton>();
 
@@ -66,15 +66,15 @@ namespace ProCalendar.UI.Controls
 
             int contentCount = this.RowsCount * this.ColumnsCount;
 
-            int count = collection.Count() < contentCount ? collection.Count() : contentCount;
+            int count = itemsSource.Count() < contentCount ? itemsSource.Count() : contentCount;
 
             for (int i = 0; i < count; i++)
             {
-                var content = LoadItemTemplateContent(column, row, collection.ElementAt(i));
+                var content = LoadItemTemplateContent(column, row, itemsSource.ElementAt(i));
                 if (content == null) return;
                 
                 this.ItemsPanelRoot.Children.Add(content);
-                //ItemsPanelRoot.UpdateLayout();
+                //this.ItemsPanelRoot.UpdateLayout();
 
                 column++;
                 if (column != this.ColumnsCount)
@@ -89,44 +89,43 @@ namespace ProCalendar.UI.Controls
 
         private FrameworkElement LoadItemTemplateContent(int gridColumn, int gridRow, object dataContext)
         {
-            var itemControl = this.ItemTemplate?.LoadContent() as Control;
-            if (itemControl == null) return null;
+            var frameworkElement = this.ItemTemplate?.LoadContent() as FrameworkElement;
+            if (frameworkElement == null) return null;
 
-            var proCalendarToggleButton = itemControl as ProCalendarToggleButton;
-            if (proCalendarToggleButton != null)
+            frameworkElement.Width = this.ItemWidth;
+            frameworkElement.Height = this.ItemHeight;
+            frameworkElement.HorizontalAlignment = this.ItemHorizontalAlignment;
+            frameworkElement.VerticalAlignment = this.ItemVerticalAlignment;
+            frameworkElement.Margin = this.ItemMargin;
+            frameworkElement.DataContext = dataContext;
+
+            Grid.SetColumn(frameworkElement, gridColumn);
+            Grid.SetRow(frameworkElement, gridRow);
+
+            var control = frameworkElement as Control;
+            if (control == null) return frameworkElement;
+
+            control.BorderBrush = this.ItemBorderBrush;
+            control.BorderThickness = this.ItemBorderThickness;
+            control.Foreground = this.ItemForeground;
+            control.Background = this.ItemBackground;
+            control.Padding = this.ItemPadding;
+
+            var proCalendarToggleButton = control as ProCalendarToggleButton;
+            if (proCalendarToggleButton == null) return control;
+
+            proCalendarToggleButton.Checked += (sender, e) =>
             {
-                var listItems = Children as List<ProCalendarToggleButton>;
-                listItems.Add(proCalendarToggleButton);
+                var args = e as CalendarToggleButtonEventArgs;
+                if (args == null) return;
 
-                proCalendarToggleButton.Checked += (sender, e) =>
-                {
-                    var args = e as CalendarToggleButtonEventArgs;
-                    if (args == null) return;
+                var selectedItem = sender as ProCalendarToggleButton;
+                if (selectedItem == null) return;
 
-                    var selectedItem = sender as ProCalendarToggleButton;
-                    if (selectedItem == null) return;
-                    
-                    SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem, args.DateTimeModel));
-                };
-            }
+                SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem, args.DateTimeModel));
+            };
 
-            itemControl.BorderBrush = this.ItemBorderBrush;
-            itemControl.BorderThickness = this.ItemBorderThickness;
-            itemControl.Foreground = this.ItemForeground;
-            itemControl.Background = this.ItemBackground;
-            itemControl.Width = this.ItemWidth;
-            itemControl.Height = this.ItemHeight;
-            itemControl.HorizontalAlignment = this.ItemHorizontalAlignment;
-            itemControl.VerticalAlignment = this.ItemVerticalAlignment;
-            itemControl.Margin = this.ItemMargin;
-            itemControl.Padding = this.ItemPadding;
-
-            itemControl.DataContext = dataContext;
-
-            Grid.SetColumn(itemControl, gridColumn);
-            Grid.SetRow(itemControl, gridRow);
-
-            return itemControl;
+            return proCalendarToggleButton;
         }
 
         #region Dependency Properties
