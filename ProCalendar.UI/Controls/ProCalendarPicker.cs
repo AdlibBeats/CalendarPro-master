@@ -57,7 +57,7 @@ namespace ProCalendar.UI.Controls
             _proCalendarView.UnselectionChanged += ProCalendar_UnselectionChanged;
         }
 
-        private async void loadingButton_Tapped(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void loadingButton_Tapped(object sender, RoutedEventArgs e)
         {
             _calendarIcon.Visibility = Visibility.Collapsed;
             _loadingProgress.IsActive = true;
@@ -74,7 +74,7 @@ namespace ProCalendar.UI.Controls
             _calendarIcon.Visibility = Visibility.Visible;
         }
 
-        private async void ProCalendar_SelectionChanged(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void ProCalendar_SelectionChanged(object sender, RoutedEventArgs e)
         {
             _loadingProgress.IsActive = true;
             _calendarIcon.Visibility = Visibility.Collapsed;

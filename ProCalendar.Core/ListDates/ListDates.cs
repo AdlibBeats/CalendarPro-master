@@ -16,7 +16,7 @@ namespace ProCalendar.Core.ListDates
             get => 42;
         }
 
-        public ListDates() : this(new DateTimeModel(), DateTime.Now) { }
+        public ListDates() : this(new DateTimeModel()) { }
 
         public ListDates(DateTimeModel dateTimeModel, params DateTime[] blackoutDays) : base(dateTimeModel, blackoutDays)
         {

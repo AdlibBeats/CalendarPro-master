@@ -25,15 +25,6 @@ namespace ProCalendar.UI.Controls
         Extended
     }
 
-    //public sealed class PanelsEventArgs : RoutedEventArgs
-    //{
-    //    public IEnumerable<Panel> Panels { get; }
-    //    public PanelsEventArgs(params Panel[] panels) : base()
-    //    {
-    //        Panels = panels;
-    //    }
-    //}
-
     public sealed class SelectedItemEventArgs : RoutedEventArgs
     {
         public CalendarToggleButton SelectedItem { get; }
@@ -47,7 +38,6 @@ namespace ProCalendar.UI.Controls
 
     public class AdaptiveGridView : Control
     {
-        //public event RoutedEventHandler ItemsPanelRootLoaded;
         public event RoutedEventHandler SelectionChanged;
 
         public AdaptiveGridView()
@@ -77,8 +67,6 @@ namespace ProCalendar.UI.Controls
                 for (int row = 0; row < this.RowsCount; row++)
                     this.ItemsPanelRoot.RowDefinitions.Add(new RowDefinition()
                         { Height = new GridLength(0, GridUnitType.Auto) });
-
-                //this.ItemsPanelRootLoaded?.Invoke(this, new PanelsEventArgs(this.ItemsPanelRoot));
             }
         }
 
@@ -129,7 +117,7 @@ namespace ProCalendar.UI.Controls
 
                     var selectedItem = sender as CalendarToggleButton;
                     if (selectedItem == null) return;
-
+                    
                     SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem, ev.DateTimeModel));
                 };
             }

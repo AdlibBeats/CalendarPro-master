@@ -108,8 +108,6 @@ namespace ProCalendar.UI.Controls
 
             VisualStateManager.GoToState(this, this.Model.IsToday ? "IsToodayTrue" : "IsToodayFalse", true);
             VisualStateManager.GoToState(this, this.Model.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
-
-            //Debug.WriteLine($"{this.Model.IsDisabled} : {this.Model.IsBlackout} : {this.Model.IsSelected} : {this.Model.IsToday} : {this.Model.IsWeekend}\n{this.Model.DateTime}\n");
         }
 
         private void ContentControl_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -135,36 +133,5 @@ namespace ProCalendar.UI.Controls
         {
             VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedNormal" : "Normal", true);
         }
-
-
-
-        /*
-            private void StartLoadedAnimation()
-            {
-                Storyboard sb = new Storyboard();
-
-                DoubleAnimation da = new DoubleAnimation()
-                {
-                    Duration = new Duration(TimeSpan.FromSeconds(1)),
-                    From = 0,
-                    To = 200,
-                    EasingFunction = new ElasticEase()
-                    {
-                        EasingMode = EasingMode.EaseInOut,
-                        Oscillations = 2,
-                        Springiness = 1
-                    },
-                    RepeatBehavior = new RepeatBehavior(1),
-                    AutoReverse = false
-                };
-
-                Storyboard.SetTarget(da, this);
-                Storyboard.SetTargetProperty(da, "(Control.Width)");
-
-                sb.Children.Add(da);
-
-                sb.Begin();
-            }
-        */
     }
 }
