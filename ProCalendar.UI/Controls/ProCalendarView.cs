@@ -33,12 +33,8 @@ namespace ProCalendar.UI.Controls
 
             UpdateContentTemplateRoot("ContentFlipView");
 
-            UpdateNavigationButtons("PreviousButtonVertical",
-                --ContentTemplateRoot.SelectedIndex,
-                    i => i.SelectedIndex > 0);
-            UpdateNavigationButtons("NextButtonVertical",
-                ++ContentTemplateRoot.SelectedIndex,
-                    i => i.Items.Count - 1 > i.SelectedIndex);
+            UpdateNavigationButtons("PreviousButtonVertical", -1, i => i.SelectedIndex > 0);
+            UpdateNavigationButtons("NextButtonVertical", 1, i => i.Items.Count - 1 > i.SelectedIndex);
         }
 
         private void UpdateContentTemplateRoot(string childName)
@@ -58,7 +54,7 @@ namespace ProCalendar.UI.Controls
             navigationButton.Click += (s, e) =>
             {
                 if (func.Invoke(ContentTemplateRoot))
-                    ContentTemplateRoot.SelectedIndex = navigationIndex;
+                    ContentTemplateRoot.SelectedIndex += navigationIndex;
             };
         }
 
