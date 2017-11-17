@@ -62,7 +62,7 @@ namespace ProCalendar.UI.Controls
         private void ContentTemplateRoot_Loaded(object sender, RoutedEventArgs e)
         {
             if (!this.IsContentTemplateRootLoaded)
-                UpdateChildren();
+                OnLoadingUpdateChildren();
 
             this.IsContentTemplateRootLoaded = true;
 
@@ -72,7 +72,7 @@ namespace ProCalendar.UI.Controls
                 LoadSelectedChildren(i => i.IsToday);
         }
 
-        private void UpdateChildren()
+        private void OnLoadingUpdateChildren()
         {
             this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot as StackPanel;
             if (this.ItemsPanelRoot == null) return;
@@ -98,14 +98,14 @@ namespace ProCalendar.UI.Controls
         {
             if (this.ContentTemplateRoot.SelectedIndex > -1)
             {
-                UpdateSelectedItems(i => _contentTemplateRoot_CurrentIndex < i.SelectedIndex);
+                OnScrollingUpdateChildren(i => _contentTemplateRoot_CurrentIndex < i.SelectedIndex);
 
                 _contentTemplateRoot_CurrentIndex =
                     this.ContentTemplateRoot.SelectedIndex;
             }
         }
 
-        private void UpdateSelectedItems(Predicate<Selector> func)
+        private void OnScrollingUpdateChildren(Predicate<Selector> func)
         {
             int index = func.Invoke(this.ContentTemplateRoot) ? -1 : 1;
 
@@ -166,12 +166,12 @@ namespace ProCalendar.UI.Controls
 
             this.SelectedDateTimeModel = selectedDateTimeModel;
 
-            UpdateSelectedChildren();
+            OnSelectedChangedUpdateChildren();
 
-            UpdateSelectionChangedEvents();
+            OnSelectedChangedUpdateEvents();
         }
 
-        private void UpdateSelectionChangedEvents()
+        private void OnSelectedChangedUpdateEvents()
         {
             if (this.SelectedDateTimeModel.IsSelected)
                 SelectionChanged?.Invoke(this.SelectedItem, new SelectedItemEventArgs(this.SelectedItem, this.SelectedDateTimeModel));
@@ -180,11 +180,11 @@ namespace ProCalendar.UI.Controls
                 this.SelectedItem = null;
                 this.SelectedDateTimeModel = null;
 
-                UnselectionChanged?.Invoke(null, new SelectedItemEventArgs(null, null));
+                UnselectionChanged?.Invoke(this.SelectedItem, new SelectedItemEventArgs());
             }
         }
 
-        private void UpdateSelectedChildren()
+        private void OnSelectedChangedUpdateChildren()
         {
             var itemsSource = ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
             if (itemsSource == null) return;
@@ -230,8 +230,10 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateSingleMode(int index, DateTimeModel dateTimeModel)
         {
-            if (this.SelectedDateTimeModel.IsSelected && this.ContentTemplateRoot.SelectedIndex.Equals(index))
+            if (this.SelectedDateTimeModel.IsSelected && this.ContentTemplateRoot.SelectedIndex == index)
                 dateTimeModel.IsSelected = this.SelectedDateTimeModel.Equals(dateTimeModel.DateTime);
+            else
+                dateTimeModel.IsSelected = false;
         }
 
         private void UpdateMultipleMode(int index, DateTimeModel dayTimeModel)

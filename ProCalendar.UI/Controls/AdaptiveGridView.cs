@@ -21,6 +21,12 @@ namespace ProCalendar.UI.Controls
     {
         public ProCalendarToggleButton SelectedItem { get; }
         public DateTimeModel DateTimeModel { get; }
+
+        public SelectedItemEventArgs()
+        {
+
+        }
+
         public SelectedItemEventArgs(ProCalendarToggleButton selectedItem, DateTimeModel dateTimeModel)
         {
             SelectedItem = selectedItem;
