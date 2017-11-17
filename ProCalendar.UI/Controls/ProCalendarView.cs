@@ -94,35 +94,35 @@ namespace ProCalendar.UI.Controls
         {
             if (this.ContentTemplateRoot.SelectedIndex > -1)
             {
-                var itemsSource = this.ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
-                if (itemsSource == null) return;
-
-                if (_contentTemplateRoot_CurrentIndex < this.ContentTemplateRoot.SelectedIndex)
-                    UpdateSelectedItems(itemsSource, this.ContentTemplateRoot.SelectedIndex - 1);
-                else
-                    UpdateSelectedItems(itemsSource, this.ContentTemplateRoot.SelectedIndex + 1);
+                UpdateSelectedItems(i => _contentTemplateRoot_CurrentIndex < i.SelectedIndex);
 
                 _contentTemplateRoot_CurrentIndex =
                     this.ContentTemplateRoot.SelectedIndex;
             }
         }
 
-        private void UpdateSelectedItems(ObservableCollection<ListDates> itemsSource, int index)
+        private void UpdateSelectedItems(Predicate<Selector> func)
         {
-            var listDates = itemsSource.ElementAt(index);
+            int index = func.Invoke(this.ContentTemplateRoot) ? -1 : 1;
+
+            var itemsSource = this.ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
+            if (itemsSource == null) return;
+
+            var listDates = itemsSource.ElementAtOrDefault(this.ContentTemplateRoot.SelectedIndex + index);
             if (listDates == null) return;
 
-            foreach (var day in listDates.ContentDays)
-            {
-                if (day.IsSelected)
-                {
-                    var currentListDates = itemsSource.ElementAt(this.ContentTemplateRoot.SelectedIndex);
+            var currentListDates = itemsSource.ElementAtOrDefault(this.ContentTemplateRoot.SelectedIndex);
+            if (currentListDates == null) return;
 
-                    var currentDateTimeModel = currentListDates.ContentDays.FirstOrDefault(i => i.Equals(day.DateTime));
+            foreach (var dayTimeModel in listDates.ContentDays)
+            {
+                if (dayTimeModel.IsSelected)
+                {
+                    var currentDateTimeModel = currentListDates.ContentDays.FirstOrDefault(i => i.Equals(dayTimeModel.DateTime));
                     if (currentDateTimeModel == null) continue;
 
                     currentDateTimeModel.IsSelected = true;
-                    day.IsSelected = false;
+                    dayTimeModel.IsSelected = false;
                 }
             }
         }
