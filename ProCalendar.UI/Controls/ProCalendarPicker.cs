@@ -79,10 +79,10 @@ namespace ProCalendar.UI.Controls
             _loadingProgress.IsActive = true;
             _calendarIcon.Visibility = Visibility.Collapsed;
             
-            var ev = e as SelectedItemEventArgs;
-            if (ev == null) return;
+            var args = e as SelectedItemEventArgs;
+            if (args == null) return;
 
-            var data = ev.SelectedItem.DataContext as DateTimeModel;
+            var data = args.SelectedItem.DataContext as DateTimeModel;
             if (data == null) return;
 
             _dateText.Text = $"{data.DateTime.Day}/{data.DateTime.Month}/{data.DateTime.Year}";

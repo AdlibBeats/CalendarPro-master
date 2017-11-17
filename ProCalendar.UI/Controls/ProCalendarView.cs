@@ -10,6 +10,14 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 namespace ProCalendar.UI.Controls
 {
+    public enum ProCalendarViewSelectionMode
+    {
+        None,
+        Single,
+        Multiple,
+        Extended
+    }
+
     public class ProCalendarView : Control
     {
         public event RoutedEventHandler SelectionChanged;
@@ -145,10 +153,10 @@ namespace ProCalendar.UI.Controls
 
         private void AdaptiveGridView_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            var selectedItemEventArgs = e as SelectedItemEventArgs;
-            if (selectedItemEventArgs == null) return;
+            var args = e as SelectedItemEventArgs;
+            if (args == null) return;
 
-            var selectedItem = selectedItemEventArgs.SelectedItem;
+            var selectedItem = args.SelectedItem;
             if (selectedItem == null) return;
 
             this.SelectedItem = selectedItem;
@@ -272,14 +280,14 @@ namespace ProCalendar.UI.Controls
         public static readonly DependencyProperty SelectedDateTimeModelProperty =
             DependencyProperty.Register("SelectedDateTimeModel", typeof(DateTimeModel), typeof(ProCalendarView), new PropertyMetadata(null));
 
-        public CalendarToggleButton SelectedItem
+        public ProCalendarToggleButton SelectedItem
         {
-            get { return (CalendarToggleButton)GetValue(SelectedItemProperty); }
+            get { return (ProCalendarToggleButton)GetValue(SelectedItemProperty); }
             private set { SetValue(SelectedItemProperty, value); }
         }
 
         public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(CalendarToggleButton), typeof(ProCalendarView), new PropertyMetadata(null));
+            DependencyProperty.Register("SelectedItem", typeof(ProCalendarToggleButton), typeof(ProCalendarView), new PropertyMetadata(null));
 
         public ProCalendarViewSelectionMode SelectionMode
         {

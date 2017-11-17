@@ -17,19 +17,11 @@ using Windows.UI.Xaml.Media;
 
 namespace ProCalendar.UI.Controls
 {
-    public enum ProCalendarViewSelectionMode
-    {
-        None,
-        Single,
-        Multiple,
-        Extended
-    }
-
     public sealed class SelectedItemEventArgs : RoutedEventArgs
     {
-        public CalendarToggleButton SelectedItem { get; }
+        public ProCalendarToggleButton SelectedItem { get; }
         public DateTimeModel DateTimeModel { get; }
-        public SelectedItemEventArgs(CalendarToggleButton selectedItem, DateTimeModel dateTimeModel)
+        public SelectedItemEventArgs(ProCalendarToggleButton selectedItem, DateTimeModel dateTimeModel)
         {
             SelectedItem = selectedItem;
             DateTimeModel = dateTimeModel;
@@ -75,7 +67,7 @@ namespace ProCalendar.UI.Controls
             var collection = this.ItemsSource as IEnumerable<object>;
             if (collection == null) return;
 
-            this.Children = new List<CalendarToggleButton>();
+            this.Children = new List<ProCalendarToggleButton>();
 
             int column = 0;
             int row = 0;
@@ -108,21 +100,21 @@ namespace ProCalendar.UI.Controls
             var itemControl = this.ItemTemplate?.LoadContent() as Control;
             if (itemControl == null) return null;
 
-            var toggleButton = itemControl as CalendarToggleButton;
-            if (toggleButton != null)
+            var proCalendarToggleButton = itemControl as ProCalendarToggleButton;
+            if (proCalendarToggleButton != null)
             {
-                var listItems = Children as List<CalendarToggleButton>;
-                listItems.Add(toggleButton);
+                var listItems = Children as List<ProCalendarToggleButton>;
+                listItems.Add(proCalendarToggleButton);
 
-                toggleButton.Checked += (sender, e) =>
+                proCalendarToggleButton.Checked += (sender, e) =>
                 {
-                    var ev = e as CalendarToggleButtonEventArgs;
-                    if (ev == null) return;
+                    var args = e as CalendarToggleButtonEventArgs;
+                    if (args == null) return;
 
-                    var selectedItem = sender as CalendarToggleButton;
+                    var selectedItem = sender as ProCalendarToggleButton;
                     if (selectedItem == null) return;
                     
-                    SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem, ev.DateTimeModel));
+                    SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem, args.DateTimeModel));
                 };
             }
 
@@ -243,14 +235,14 @@ namespace ProCalendar.UI.Controls
 
         #region Template Properties
 
-        public List<CalendarToggleButton> Children
+        public List<ProCalendarToggleButton> Children
         {
-            get { return (List<CalendarToggleButton>)GetValue(ChildrenProperty); }
+            get { return (List<ProCalendarToggleButton>)GetValue(ChildrenProperty); }
             private set { SetValue(ChildrenProperty, value); }
         }
 
         public static readonly DependencyProperty ChildrenProperty =
-            DependencyProperty.Register("Children", typeof(List<CalendarToggleButton>), typeof(AdaptiveGridView), new PropertyMetadata(null));
+            DependencyProperty.Register("Children", typeof(List<ProCalendarToggleButton>), typeof(AdaptiveGridView), new PropertyMetadata(null));
 
         public Grid ItemsPanelRoot
         {

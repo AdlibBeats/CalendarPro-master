@@ -23,15 +23,15 @@ namespace ProCalendar.UI.Controls
         }
     }
 
-    public class CalendarToggleButton : ContentControl
+    public class ProCalendarToggleButton : ContentControl
     {
-        private DateTimeModel Model { get; set; }
+        private DateTimeModel _model;
 
         public event RoutedEventHandler Checked;
 
-        public CalendarToggleButton()
+        public ProCalendarToggleButton()
         {
-            this.DefaultStyleKey = typeof(CalendarToggleButton);
+            this.DefaultStyleKey = typeof(ProCalendarToggleButton);
 
             this.PointerPressed += ContentControl_PointerPressed;
             this.PointerReleased += ContentControl_PointerReleased;
@@ -50,13 +50,13 @@ namespace ProCalendar.UI.Controls
 
         private void ProCalendarItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            var contentControl = sender as CalendarToggleButton;
+            var contentControl = sender as ProCalendarToggleButton;
             if (contentControl == null) return;
 
-            this.Model = args.NewValue as DateTimeModel;
-            if (this.Model == null) return;
+            _model = args.NewValue as DateTimeModel;
+            if (_model == null) return;
 
-            this.Model.PropertyChanged += (s, e) =>
+            _model.PropertyChanged += (s, e) =>
             {
                 contentControl.UpdateStates();
             };
@@ -64,23 +64,23 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateStates()
         {
-            if (this.Model.IsSelected)
+            if (_model.IsSelected)
                 UpdateSelectedStates(i => i.IsDisabled, j => j.IsBlackout, "Checked");
             else
                 UpdateSelectedStates(i => i.IsDisabled, j => j.IsBlackout);
 
-            VisualStateManager.GoToState(this, this.Model.IsToday ? "IsToodayTrue" : "IsToodayFalse", true);
-            VisualStateManager.GoToState(this, this.Model.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
+            VisualStateManager.GoToState(this, _model.IsToday ? "IsToodayTrue" : "IsToodayFalse", true);
+            VisualStateManager.GoToState(this, _model.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
         }
 
         private void UpdateSelectedStates(Predicate<DateTimeModel> func1, Predicate<DateTimeModel> func2, string stateName = null)
         {
-            if (func1.Invoke(this.Model))
+            if (func1.Invoke(_model))
             {
                 this.IsEnabled = false;
                 stateName += "Disabled";
             }
-            else if (func2.Invoke(this.Model))
+            else if (func2.Invoke(_model))
             {
                 this.IsEnabled = false;
                 stateName += "Blackouted";
@@ -95,26 +95,26 @@ namespace ProCalendar.UI.Controls
 
         private void ContentControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedPressed" : "Pressed", true);
+            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedPressed" : "Pressed", true);
 
-            Model.IsSelected = !Model.IsSelected;
+            _model.IsSelected = !_model.IsSelected;
 
-            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(this.Model.IsSelected, this.Model));
+            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(_model.IsSelected, _model));
         }
 
         private void ContentControl_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedPointerOver" : "PointerOver", true);
+            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedPointerOver" : "PointerOver", true);
         }
 
         private void ContentControl_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedNormal" : "Normal", true);
         }
 
         private void ContentControl_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, Model.IsSelected ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedNormal" : "Normal", true);
         }
     }
 }

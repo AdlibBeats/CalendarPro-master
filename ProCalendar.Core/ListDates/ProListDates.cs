@@ -136,7 +136,7 @@ namespace ProCalendar.Core.ListDates
         }
 
         public static readonly DependencyProperty BlackoutDaysProperty =
-            DependencyProperty.Register("BlackoutDays", typeof(List<DateTime>), typeof(ProListDates), new PropertyMetadata(null));
+            DependencyProperty.Register("BlackoutDays", typeof(DateTime[]), typeof(ProListDates), new PropertyMetadata(null));
 
         public ObservableCollection<ListDates> ListDates
         {

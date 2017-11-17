@@ -8,7 +8,7 @@
         <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Colors/ColorsDictionary.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="local:CalendarToggleButton">
+    <Style TargetType="local:ProCalendarToggleButton">
         <Style.Setters>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Background" Value="White"/>
@@ -23,7 +23,7 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="local:CalendarToggleButton">
+                    <ControlTemplate TargetType="local:ProCalendarToggleButton">
                         <Grid
                             x:Name="Root"
                             Background="{TemplateBinding Background}"

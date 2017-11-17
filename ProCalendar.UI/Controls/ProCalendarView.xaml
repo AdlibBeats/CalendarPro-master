@@ -113,16 +113,16 @@
                                             ItemsSource="{Binding ContentDays, Mode=OneWay}">
                                             <controls:AdaptiveGridView.ItemTemplate>
                                                 <DataTemplate>
-                                                    <controls:CalendarToggleButton HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                                        <controls:CalendarToggleButton.Content>
+                                                    <controls:ProCalendarToggleButton HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                                        <controls:ProCalendarToggleButton.Content>
                                                             <TextBlock
                                                                 FontSize="12"
                                                                 VerticalAlignment="Center"
                                                                 HorizontalAlignment="Stretch"
                                                                 TextAlignment="Center"
                                                                 Text="{Binding DateTime.Day}"/>
-                                                        </controls:CalendarToggleButton.Content>
-                                                    </controls:CalendarToggleButton>
+                                                        </controls:ProCalendarToggleButton.Content>
+                                                    </controls:ProCalendarToggleButton>
                                                 </DataTemplate>
                                             </controls:AdaptiveGridView.ItemTemplate>
                                         </controls:AdaptiveGridView>

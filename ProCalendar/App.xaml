@@ -11,7 +11,7 @@
                 <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Styles/ButtonDictionary.xaml"/>
                 <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Styles/FlipViewDictionary.xaml"/>
                 
-                <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Controls/CalendarToggleButton.xaml"/>
+                <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Controls/ProCalendarToggleButton.xaml"/>
                 <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Controls/AdaptiveGridView.xaml"/>
                 <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Controls/ProCalendarView.xaml"/>
                 <ResourceDictionary Source="ms-appx:///ProCalendar.UI/Controls/ProCalendarPicker.xaml"/>
