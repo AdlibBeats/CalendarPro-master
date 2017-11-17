@@ -1,19 +1,12 @@
-﻿using System;
+﻿using ProCalendar.Core.BaseListDates;
+using ProCalendar.Core.ListDates;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
-using ProCalendar.Core.ListDates;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using System.Globalization;
-using Windows.Foundation;
-using System.Diagnostics;
-using ProCalendar.Core.BaseListDates;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI;
 
 namespace ProCalendar.UI.Controls
 {
@@ -61,32 +54,35 @@ namespace ProCalendar.UI.Controls
         private void ContentTemplateRoot_Loaded(object sender, RoutedEventArgs e)
         {
             if (!this.IsContentTemplateRootLoaded)
-            {
-                this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot as StackPanel;
-                if (this.ItemsPanelRoot == null) return;
-
-                this.Children = new List<AdaptiveGridView>();
-
-                for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
-                {
-                    var flipViewItem = this.ItemsPanelRoot.Children.ElementAt(i) as SelectorItem;
-                    if (flipViewItem == null) return;
-
-                    var adaptiveGridView = flipViewItem.ContentTemplateRoot as AdaptiveGridView;
-                    if (adaptiveGridView == null) return;
-
-                    adaptiveGridView.SelectionChanged += AdaptiveGridView_SelectionChanged;
-
-                    this.Children.Add(adaptiveGridView);
-                }
-            }
+                UpdateChildren();
 
             this.IsContentTemplateRootLoaded = true;
 
             if (this.SelectedItem != null)
-                LoadSelectedItems(i => i.IsSelected);
+                LoadSelectedChildren(i => i.IsSelected);
             else
-                LoadSelectedItems(i => i.IsToday);
+                LoadSelectedChildren(i => i.IsToday);
+        }
+
+        private void UpdateChildren()
+        {
+            this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot as StackPanel;
+            if (this.ItemsPanelRoot == null) return;
+
+            this.Children = new List<AdaptiveGridView>();
+
+            for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
+            {
+                var selectorItem = this.ItemsPanelRoot.Children.ElementAtOrDefault(i) as SelectorItem;
+                if (selectorItem == null) return;
+
+                var adaptiveGridView = selectorItem.ContentTemplateRoot as AdaptiveGridView;
+                if (adaptiveGridView == null) return;
+
+                adaptiveGridView.SelectionChanged += AdaptiveGridView_SelectionChanged;
+
+                this.Children.Add(adaptiveGridView);
+            }
         }
 
         private int _contentTemplateRoot_CurrentIndex = 0;
@@ -127,7 +123,7 @@ namespace ProCalendar.UI.Controls
             }
         }
 
-        private void LoadSelectedItems(Predicate<DateTimeModel> func)
+        private void LoadSelectedChildren(Predicate<DateTimeModel> func)
         {
             var itemsSource = ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
             if (itemsSource == null) return;
@@ -162,7 +158,7 @@ namespace ProCalendar.UI.Controls
 
             this.SelectedDateTimeModel = selectedDateTimeModel;
 
-            UpdateChildren();
+            UpdateSelectedChildren();
 
             UpdateSelectionChangedEvents();
         }
@@ -180,7 +176,7 @@ namespace ProCalendar.UI.Controls
             }
         }
 
-        private void UpdateChildren()
+        private void UpdateSelectedChildren()
         {
             var itemsSource = ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
             if (itemsSource == null) return;
@@ -219,30 +215,23 @@ namespace ProCalendar.UI.Controls
             }
         }
 
-        private void UpdateNoneMode(int index, DateTimeModel day)
+        private void UpdateNoneMode(int index, DateTimeModel dayTimeModel)
         {
             //TODO:
         }
 
-        private void UpdateSingleMode(int index, DateTimeModel day)
+        private void UpdateSingleMode(int index, DateTimeModel dateTimeModel)
         {
-            if (this.SelectedDateTimeModel.IsSelected && this.ContentTemplateRoot.SelectedIndex == index)
-            {
-                if (!this.SelectedDateTimeModel.Equals(day.DateTime))
-                    day.IsSelected = false;
-                else
-                    day.IsSelected = true;
-            }
-            else
-                day.IsSelected = false;
+            if (this.SelectedDateTimeModel.IsSelected && this.ContentTemplateRoot.SelectedIndex.Equals(index))
+                dateTimeModel.IsSelected = this.SelectedDateTimeModel.Equals(dateTimeModel.DateTime);
         }
 
-        private void UpdateMultipleMode(int index, DateTimeModel day)
+        private void UpdateMultipleMode(int index, DateTimeModel dayTimeModel)
         {
             //TODO:
         }
 
-        private void UpdateExtendedMode(int index, DateTimeModel day)
+        private void UpdateExtendedMode(int index, DateTimeModel dayTimeModel)
         {
             //TODO:
         }
