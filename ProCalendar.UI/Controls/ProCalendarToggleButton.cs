@@ -27,33 +27,53 @@ namespace ProCalendar.UI.Controls
         {
             this.DefaultStyleKey = typeof(ProCalendarToggleButton);
 
-            this.PointerPressed += ContentControl_PointerPressed;
-            this.PointerReleased += ContentControl_PointerReleased;
-            this.PointerEntered += ContentControl_PointerEntered;
-            this.PointerExited += ContentControl_PointerExited;
+            this.PointerPressed += OnPointerPressed;
+            this.PointerReleased += OnPointerReleased;
+            this.PointerEntered += OnPointerEntered;
+            this.PointerExited += OnPointerExited;
 
-            this.DataContextChanged += ProCalendarItem_DataContextChanged;
+            this.DataContextChanged += OnDataContextChanged;
 
-            this.Loaded += CalendarToggleButton_Loaded;
+            this.Loaded += OnLoaded;
         }
 
-        private void CalendarToggleButton_Loaded(object sender, RoutedEventArgs e)
+        private void OnLoaded(object sender, RoutedEventArgs e)
         {
             UpdateStates();
         }
 
-        private void ProCalendarItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        private void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            var contentControl = sender as ProCalendarToggleButton;
-            if (contentControl == null) return;
-
             _model = args.NewValue as DateTimeModel;
             if (_model == null) return;
 
             _model.PropertyChanged += (s, e) =>
             {
-                contentControl.UpdateStates();
+                UpdateStates();
             };
+        }
+        private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedPressed" : "Pressed", true);
+
+            _model.IsSelected = !_model.IsSelected;
+
+            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(_model.IsSelected, _model));
+        }
+
+        private void OnPointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedPointerOver" : "PointerOver", true);
+        }
+
+        private void OnPointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedNormal" : "Normal", true);
+        }
+
+        private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedNormal" : "Normal", true);
         }
 
         private void UpdateStates()
@@ -85,30 +105,6 @@ namespace ProCalendar.UI.Controls
                 stateName += "Normal";
             }
             VisualStateManager.GoToState(this, stateName, true);
-        }
-
-        private void ContentControl_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedPressed" : "Pressed", true);
-
-            _model.IsSelected = !_model.IsSelected;
-
-            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(_model.IsSelected, _model));
-        }
-
-        private void ContentControl_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedPointerOver" : "PointerOver", true);
-        }
-
-        private void ContentControl_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedNormal" : "Normal", true);
-        }
-
-        private void ContentControl_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            VisualStateManager.GoToState(this, _model.IsSelected ? "CheckedNormal" : "Normal", true);
         }
     }
 }
