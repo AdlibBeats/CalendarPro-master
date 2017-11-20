@@ -79,22 +79,22 @@ namespace ProCalendar.UI.Controls
         private void UpdateStates()
         {
             if (_model.IsSelected)
-                UpdateSelectedStates(i => i.IsDisabled, j => j.IsBlackout, "Checked");
+                UpdateSelectedStates("Checked");
             else
-                UpdateSelectedStates(i => i.IsDisabled, j => j.IsBlackout);
+                UpdateSelectedStates();
 
             VisualStateManager.GoToState(this, _model.IsToday ? "IsToodayTrue" : "IsToodayFalse", true);
             VisualStateManager.GoToState(this, _model.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
         }
 
-        private void UpdateSelectedStates(Predicate<DateTimeModel> func1, Predicate<DateTimeModel> func2, string stateName = null)
+        private void UpdateSelectedStates(string stateName = null)
         {
-            if (func1.Invoke(_model))
+            if (_model.IsDisabled)
             {
                 this.IsEnabled = false;
                 stateName += "Disabled";
             }
-            else if (func2.Invoke(_model))
+            else if (_model.IsBlackout)
             {
                 this.IsEnabled = false;
                 stateName += "Blackouted";

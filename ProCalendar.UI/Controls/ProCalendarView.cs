@@ -96,16 +96,16 @@ namespace ProCalendar.UI.Controls
         {
             if (this.ContentTemplateRoot.SelectedIndex > -1)
             {
-                OnScrollingUpdateChildren(i => _contentTemplateRoot_CurrentIndex < i.SelectedIndex);
+                OnScrollingUpdateChildren();
 
                 _contentTemplateRoot_CurrentIndex =
                     this.ContentTemplateRoot.SelectedIndex;
             }
         }
 
-        private void OnScrollingUpdateChildren(Predicate<Selector> func)
+        private void OnScrollingUpdateChildren()
         {
-            int index = func.Invoke(this.ContentTemplateRoot) ? -1 : 1;
+            int index = _contentTemplateRoot_CurrentIndex < this.ContentTemplateRoot.SelectedIndex ? -1 : 1;
 
             var itemsSource = this.ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
             if (itemsSource == null) return;
