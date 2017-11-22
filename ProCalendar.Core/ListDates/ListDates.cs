@@ -26,7 +26,7 @@ namespace ProCalendar.Core.ListDates
         private void Initialize()
         {
             int count = 0;
-            this.ContentDays = new ObservableCollection<DateTimeModel>();
+            this.ContentDays = new List<DateTimeModel>();
 
             int dayOfWeek = (int)this.CurrentDay.DateTime.DayOfWeek;
 
@@ -60,13 +60,6 @@ namespace ProCalendar.Core.ListDates
             }
         }
 
-        public ObservableCollection<DateTimeModel> ContentDays
-        {
-            get { return (ObservableCollection<DateTimeModel>)GetValue(ContentDaysProperty); }
-            set { SetValue(ContentDaysProperty, value); }
-        }
-
-        public static readonly DependencyProperty ContentDaysProperty =
-            DependencyProperty.Register("ContentDays", typeof(ObservableCollection<DateTimeModel>), typeof(ListDates), new PropertyMetadata(null));
+        public List<DateTimeModel> ContentDays { get; set; }
     }
 }

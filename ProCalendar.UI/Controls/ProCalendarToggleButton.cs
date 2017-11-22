@@ -47,7 +47,7 @@ namespace ProCalendar.UI.Controls
             _model = args.NewValue as DateTimeModel;
             if (_model == null) return;
 
-            _model.PropertyChanged += (s, e) =>
+            _model.DateTimeModelChanged += (s, e) =>
             {
                 UpdateStates();
             };

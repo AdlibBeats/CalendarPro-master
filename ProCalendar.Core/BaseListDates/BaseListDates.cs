@@ -11,67 +11,103 @@ using Windows.UI.Xaml;
 
 namespace ProCalendar.Core.BaseListDates
 {
-    public interface IBaseModel : INotifyPropertyChanged
+    //public interface IBaseModel : INotifyPropertyChanged
+    //{
+    //    void SetValue<V>(ref V oldValue, V newValue, [CallerMemberName]string propertyName = null);
+    //}
+
+    //public abstract class BaseModel : DependencyObject, IBaseModel
+    //{
+    //    #region INotifyPropertyChanged Members
+
+    //    public event PropertyChangedEventHandler PropertyChanged;
+
+    //    public virtual void SetValue<V>(ref V oldValue, V newValue, [CallerMemberName]string propertyName = null)
+    //    {
+    //        oldValue = newValue;
+    //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    //    }
+
+    //    #endregion
+    //}
+
+    public class DateTimeModelEventArgs : EventArgs
     {
-        void SetValue<V>(ref V oldValue, V newValue, [CallerMemberName]string propertyName = null);
-    }
+        public object NewValue { get; }
 
-    public abstract class BaseModel : DependencyObject, IBaseModel
-    {
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public virtual void SetValue<V>(ref V oldValue, V newValue, [CallerMemberName]string propertyName = null)
+        public DateTimeModelEventArgs(object newValue)
         {
-            oldValue = newValue;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            NewValue = newValue;
         }
-
-        #endregion
     }
 
-    public class DateTimeModel : BaseModel
+
+    public class DateTimeModel
     {
+        public event EventHandler<DateTimeModelEventArgs> DateTimeModelChanged;
         public bool IsSelected
         {
             get => _isSelected;
-            set => SetValue(ref _isSelected, value);
+            set
+            {
+                _isSelected = value;
+                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
+            }
         }
         private bool _isSelected;
 
         public bool IsBlackout
         {
             get => _isBlackout;
-            set => SetValue(ref _isBlackout, value);
+            set
+            {
+                _isBlackout = value;
+                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
+            }
         }
         private bool _isBlackout;
 
         public bool IsDisabled
         {
             get => _isDisabled;
-            set => SetValue(ref _isDisabled, value);
+            set
+            {
+                _isDisabled = value;
+                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
+            }
         }
         private bool _isDisabled;
-        
+
         public bool IsWeekend
         {
             get => _isWeekend;
-            set => SetValue(ref _isWeekend, value);
+            set
+            {
+                _isWeekend = value;
+                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
+            }
         }
         private bool _isWeekend;
 
         public bool IsToday
         {
             get => _isToday;
-            set => SetValue(ref _isToday, value);
+            set
+            {
+                _isToday = value;
+                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
+            }
         }
         private bool _isToday;
 
         public DateTime DateTime
         {
             get => _dateTime;
-            set => SetValue(ref _dateTime, value);
+            set
+            {
+                _dateTime = value;
+                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
+            }
         }
         private DateTime _dateTime;
 
@@ -81,7 +117,7 @@ namespace ProCalendar.Core.BaseListDates
             this.DateTime.Day == dateTime.Day;
     }
 
-    public class BaseListDates<T> : BaseModel
+    public class BaseListDates<T>
     {
         public BaseListDates(DateTimeModel currentDay, params DateTime[] blackoutDays)
         {
@@ -95,7 +131,7 @@ namespace ProCalendar.Core.BaseListDates
 
         private void Initialize()
         {
-            this.CurrentDays = new ObservableCollection<DateTimeModel>();
+            this.CurrentDays = new List<DateTimeModel>();
 
             int countDays = DateTime.DaysInMonth(CurrentDay.DateTime.Year, CurrentDay.DateTime.Month);
             for (int day = 1; day <= countDays; day++)
@@ -137,29 +173,10 @@ namespace ProCalendar.Core.BaseListDates
             dateTime.Month == DateTime.Now.Month &&
             dateTime.Day == DateTime.Now.Day;
 
-        public List<DateTime> BlackoutDays
-        {
-            get { return (List<DateTime>)GetValue(BlackoutDaysProperty); }
-            set { SetValue(BlackoutDaysProperty, value); }
-        }
+        public List<DateTime> BlackoutDays { get; set; }
 
-        public static readonly DependencyProperty BlackoutDaysProperty =
-            DependencyProperty.Register("BlackoutDays", typeof(List<DateTime>), typeof(BaseListDates<T>), new PropertyMetadata(null));
+        public DateTimeModel CurrentDay { get; set; }
 
-        public DateTimeModel CurrentDay
-        {
-            get => _currentDay;
-            set => SetValue(ref _currentDay, value);
-        }
-        private DateTimeModel _currentDay;
-
-        public ObservableCollection<DateTimeModel> CurrentDays
-        {
-            get { return (ObservableCollection<DateTimeModel>)GetValue(CurrentDaysProperty); }
-            set { SetValue(CurrentDaysProperty, value); }
-        }
-
-        public static readonly DependencyProperty CurrentDaysProperty =
-            DependencyProperty.Register("CurrentDays", typeof(ObservableCollection<DateTimeModel>), typeof(BaseListDates<T>), new PropertyMetadata(null));
+        public List<DateTimeModel> CurrentDays { get; set; }
     }
 }

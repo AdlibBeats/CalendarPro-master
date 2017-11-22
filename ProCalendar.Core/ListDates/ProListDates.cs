@@ -17,28 +17,13 @@ namespace ProCalendar.Core.ListDates
         LoadingDays
     }
 
-    public sealed class ProListDates : BaseModel
+    public sealed class ProListDates
     {
-        public DateTime Min
-        {
-            get => _min;
-            set => SetValue(ref _min, value);
-        }
-        private DateTime _min;
+        public DateTime Min { get; set; }
 
-        public DateTime Max
-        {
-            get => _max;
-            set => SetValue(ref _max, value);
-        }
-        private DateTime _max;
+        public DateTime Max { get; set; }
 
-        public ProListDatesLoadingType ProListDatesLoadingType
-        {
-            get => _proListDatesLoadingType;
-            set => SetValue(ref _proListDatesLoadingType, value);
-        }
-        private ProListDatesLoadingType _proListDatesLoadingType;
+        public ProListDatesLoadingType ProListDatesLoadingType { get; set; }
 
         public ProListDates() : this(DateTime.Now, DateTime.Now.AddMonths(3), ProListDatesLoadingType.LoadingMonths, DateTime.Now.AddDays(3), DateTime.Now.AddDays(12))
         {
@@ -57,7 +42,7 @@ namespace ProCalendar.Core.ListDates
 
         private void Initialize()
         {
-            this.ListDates = new ObservableCollection<ListDates>();
+            this.ListDates = new List<ListDates>();
 
             switch (this.ProListDatesLoadingType)
             {
@@ -129,22 +114,8 @@ namespace ProCalendar.Core.ListDates
             //TODO: 
         }
 
-        public DateTime[] BlackoutDays
-        {
-            get { return (DateTime[])GetValue(BlackoutDaysProperty); }
-            set { SetValue(BlackoutDaysProperty, value); }
-        }
+        public DateTime[] BlackoutDays { get; set; }
 
-        public static readonly DependencyProperty BlackoutDaysProperty =
-            DependencyProperty.Register("BlackoutDays", typeof(DateTime[]), typeof(ProListDates), new PropertyMetadata(null));
-
-        public ObservableCollection<ListDates> ListDates
-        {
-            get { return (ObservableCollection<ListDates>)GetValue(ListDatesProperty); }
-            set { SetValue(ListDatesProperty, value); }
-        }
-
-        public static readonly DependencyProperty ListDatesProperty =
-            DependencyProperty.Register("ListDates", typeof(ObservableCollection<ListDates>), typeof(ProListDates), new PropertyMetadata(null));
+        public List<ListDates> ListDates { get; set; }
     }
 }
