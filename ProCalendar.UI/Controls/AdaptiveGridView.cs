@@ -11,12 +11,12 @@ namespace ProCalendar.UI.Controls
     public sealed class SelectedItemEventArgs : RoutedEventArgs
     {
         public ProCalendarToggleButton SelectedItem { get; }
-        public DateTimeModel DateTimeModel { get; }
+        //public DateTimeModel DateTimeModel { get; }
         public SelectedItemEventArgs() { }
-        public SelectedItemEventArgs(ProCalendarToggleButton selectedItem, DateTimeModel dateTimeModel)
+        public SelectedItemEventArgs(ProCalendarToggleButton selectedItem)
         {
             SelectedItem = selectedItem;
-            DateTimeModel = dateTimeModel;
+            //DateTimeModel = dateTimeModel;
         }
     }
 
@@ -120,7 +120,7 @@ namespace ProCalendar.UI.Controls
                 var selectedItem = sender as ProCalendarToggleButton;
                 if (selectedItem == null) return;
 
-                SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem, args.DateTimeModel));
+                SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem));
             };
 
             return proCalendarToggleButton;

@@ -107,7 +107,7 @@ namespace ProCalendar.UI.Controls
         {
             int index = _contentTemplateRoot_CurrentIndex < this.ContentTemplateRoot.SelectedIndex ? -1 : 1;
 
-            var itemsSource = this.ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
+            var itemsSource = this.ContentTemplateRoot.ItemsSource as List<ListDates>;
             if (itemsSource == null) return;
 
             var listDates = itemsSource.ElementAtOrDefault(this.ContentTemplateRoot.SelectedIndex + index);
@@ -131,7 +131,7 @@ namespace ProCalendar.UI.Controls
 
         private void LoadSelectedChildren(Predicate<DateTimeModel> func)
         {
-            var itemsSource = ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
+            var itemsSource = ContentTemplateRoot.ItemsSource as List<ListDates>;
             if (itemsSource == null) return;
 
             int index = 0;
@@ -172,7 +172,7 @@ namespace ProCalendar.UI.Controls
         private void OnSelectedChangedUpdateEvents()
         {
             if (this.SelectedDateTimeModel.IsSelected)
-                SelectionChanged?.Invoke(this.SelectedItem, new SelectedItemEventArgs(this.SelectedItem, this.SelectedDateTimeModel));
+                SelectionChanged?.Invoke(this.SelectedItem, new SelectedItemEventArgs(this.SelectedItem));
             else
             {
                 this.SelectedItem = null;
@@ -184,7 +184,7 @@ namespace ProCalendar.UI.Controls
 
         private void OnSelectedChangedUpdateChildren()
         {
-            var itemsSource = ContentTemplateRoot.ItemsSource as ObservableCollection<ListDates>;
+            var itemsSource = ContentTemplateRoot.ItemsSource as List<ListDates>;
             if (itemsSource == null) return;
 
             int index = 0;
