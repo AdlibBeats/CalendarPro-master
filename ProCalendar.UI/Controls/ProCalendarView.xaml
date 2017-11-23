@@ -61,16 +61,13 @@
                                 </StackPanel>
                             </Grid>
                             <controls:AdaptiveGridView
+                                x:Name="DaysOfWeekContent"
                                 Margin="0"
                                 Grid.Row="1"
                                 ColumnsCount="7"
                                 RowsCount="1"
                                 ItemHeight="36"
-                                ItemWidth="36"
-                                ItemsSource="{Binding ContentDays, Mode=OneWay}">
-                                <controls:AdaptiveGridView.DataContext>
-                                    <data:ListDates/>
-                                </controls:AdaptiveGridView.DataContext>
+                                ItemWidth="36">
                                 <controls:AdaptiveGridView.ItemTemplate>
                                     <DataTemplate>
                                         <ContentControl
@@ -96,13 +93,9 @@
                                 Height="216"
                                 ItemsSource="{Binding ListDates, Mode=OneWay}"
                                 Style="{StaticResource CalendarFlipView}">
-                                <FlipView.DataContext>
-                                    <data:ProListDates/>
-                                </FlipView.DataContext>
                                 <FlipView.ItemTemplate>
                                     <DataTemplate>
                                         <controls:AdaptiveGridView
-                                            x:Name="ContentRoot"
                                             Margin="0"
                                             BorderBrush="Gray"
                                             BorderThickness="0.5,0.5,0,0"

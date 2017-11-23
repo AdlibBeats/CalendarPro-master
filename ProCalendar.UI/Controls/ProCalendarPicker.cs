@@ -73,14 +73,10 @@ namespace ProCalendar.UI.Controls
         {
             _loadingProgress.IsActive = true;
             _calendarIcon.Visibility = Visibility.Collapsed;
-            
-            var args = e as SelectedItemEventArgs;
-            if (args == null) return;
 
-            var data = args.SelectedItem.DataContext as DateTimeModel;
-            if (data == null) return;
-
-            _dateText.Text = $"{data.DateTime.Day}/{data.DateTime.Month}/{data.DateTime.Year}";
+            var selectedItem = sender as ProCalendarToggleButton;
+            if (selectedItem != null)
+                _dateText.Text = $"{selectedItem.DateTime.Day}/{selectedItem.DateTime.Month}/{selectedItem.DateTime.Year}";
 
             await Task.Run(async () =>
             {

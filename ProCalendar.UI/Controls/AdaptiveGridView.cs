@@ -1,4 +1,5 @@
 ﻿using ProCalendar.Core.BaseListDates;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI;
@@ -8,18 +9,6 @@ using Windows.UI.Xaml.Media;
 
 namespace ProCalendar.UI.Controls
 {
-    public sealed class SelectedItemEventArgs : RoutedEventArgs
-    {
-        public ProCalendarToggleButton SelectedItem { get; }
-        //public DateTimeModel DateTimeModel { get; }
-        public SelectedItemEventArgs() { }
-        public SelectedItemEventArgs(ProCalendarToggleButton selectedItem)
-        {
-            SelectedItem = selectedItem;
-            //DateTimeModel = dateTimeModel;
-        }
-    }
-
     public class AdaptiveGridView : Control
     {
         public event RoutedEventHandler SelectionChanged;
@@ -112,18 +101,25 @@ namespace ProCalendar.UI.Controls
             var proCalendarToggleButton = control as ProCalendarToggleButton;
             if (proCalendarToggleButton == null) return control;
 
-            proCalendarToggleButton.Checked += (sender, e) =>
-            {
-                var args = e as CalendarToggleButtonEventArgs;
-                if (args == null) return;
+            var dateTimeModel = dataContext as DateTimeModel;
+            if (dateTimeModel == null) return control;
+            
+            proCalendarToggleButton.IsSelected = dateTimeModel.IsSelected;
+            proCalendarToggleButton.IsBlackout = dateTimeModel.IsBlackout;
+            proCalendarToggleButton.IsDisabled = dateTimeModel.IsDisabled;
+            proCalendarToggleButton.IsWeekend = dateTimeModel.IsWeekend;
+            proCalendarToggleButton.IsToday = dateTimeModel.IsToday;
+            proCalendarToggleButton.DateTime = dateTimeModel.DateTime;
 
-                var selectedItem = sender as ProCalendarToggleButton;
-                if (selectedItem == null) return;
-
-                SelectionChanged?.Invoke(this, new SelectedItemEventArgs(selectedItem));
-            };
+            proCalendarToggleButton.Selected -= OnSelected;
+            proCalendarToggleButton.Selected += OnSelected;
 
             return proCalendarToggleButton;
+        }
+
+        private void OnSelected(object sender, RoutedEventArgs e)
+        {
+            SelectionChanged?.Invoke(sender, null);
         }
 
         #region Dependency Properties
@@ -223,15 +219,6 @@ namespace ProCalendar.UI.Controls
         #endregion
 
         #region Template Properties
-
-        public List<ProCalendarToggleButton> Children
-        {
-            get { return (List<ProCalendarToggleButton>)GetValue(ChildrenProperty); }
-            private set { SetValue(ChildrenProperty, value); }
-        }
-
-        public static readonly DependencyProperty ChildrenProperty =
-            DependencyProperty.Register("Children", typeof(List<ProCalendarToggleButton>), typeof(AdaptiveGridView), new PropertyMetadata(new List<ProCalendarToggleButton>()));
 
         public Grid ItemsPanelRoot
         {

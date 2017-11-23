@@ -6,17 +6,6 @@ using Windows.UI.Xaml.Input;
 
 namespace ProCalendar.UI.Controls
 {
-    public class CalendarToggleButtonEventArgs : RoutedEventArgs
-    {
-        public bool IsChecked { get; }
-        //public DateTimeModel DateTimeModel { get; }
-        public CalendarToggleButtonEventArgs(bool isChecked)
-        {
-            IsChecked = isChecked;
-            //DateTimeModel = dateTimeModel;
-        }
-    }
-
     public class ProCalendarToggleButton : ContentControl
     {
         public bool IsSelected
@@ -33,7 +22,7 @@ namespace ProCalendar.UI.Controls
             var proCalendarToggleButton = d as ProCalendarToggleButton;
             if (proCalendarToggleButton == null) return;
 
-            proCalendarToggleButton.UpdateStates();
+            proCalendarToggleButton.UpdateIsSelected((bool)e.NewValue);
         }
 
         public bool IsBlackout
@@ -50,7 +39,7 @@ namespace ProCalendar.UI.Controls
             var proCalendarToggleButton = d as ProCalendarToggleButton;
             if (proCalendarToggleButton == null) return;
 
-            proCalendarToggleButton.UpdateStates();
+            proCalendarToggleButton.UpdateIsBlackout((bool)e.NewValue);
         }
 
         public bool IsDisabled
@@ -67,7 +56,7 @@ namespace ProCalendar.UI.Controls
             var proCalendarToggleButton = d as ProCalendarToggleButton;
             if (proCalendarToggleButton == null) return;
 
-            proCalendarToggleButton.UpdateStates();
+            proCalendarToggleButton.UpdateIsDisable((bool)e.NewValue);
         }
 
         public bool IsWeekend
@@ -84,7 +73,7 @@ namespace ProCalendar.UI.Controls
             var proCalendarToggleButton = d as ProCalendarToggleButton;
             if (proCalendarToggleButton == null) return;
 
-            proCalendarToggleButton.UpdateStates();
+            proCalendarToggleButton.UpdateIsWeekend((bool)e.NewValue);
         }
 
         public bool IsToday
@@ -101,7 +90,7 @@ namespace ProCalendar.UI.Controls
             var proCalendarToggleButton = d as ProCalendarToggleButton;
             if (proCalendarToggleButton == null) return;
 
-            proCalendarToggleButton.UpdateStates();
+            proCalendarToggleButton.UpdateIsToday((bool)e.NewValue);
         }
 
         public DateTime DateTime
@@ -118,95 +107,106 @@ namespace ProCalendar.UI.Controls
             var proCalendarToggleButton = d as ProCalendarToggleButton;
             if (proCalendarToggleButton == null) return;
 
-            proCalendarToggleButton.UpdateStates();
+            proCalendarToggleButton.UpdateDateTime((DateTime)e.NewValue);
         }
 
-        private DateTimeModel dataContext;
+        protected override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            
+            UpdateDateTime(this.DateTime);
 
-        public event RoutedEventHandler Checked;
+            if (this.IsDisabled)
+                UpdateIsDisable(this.IsDisabled);
+            else if (this.IsBlackout)
+                UpdateIsBlackout(this.IsBlackout);
+            else
+                UpdateIsSelected(this.IsSelected);
+
+            UpdateIsToday(this.IsToday);
+            UpdateIsWeekend(this.IsWeekend);
+        }
+
+        private void UpdateDateTime(DateTime value)
+        {
+            this.Content = value.Day;
+        }
+
+        private void UpdateIsSelected(bool value)
+        {
+            this.IsEnabled = true;
+
+            VisualStateManager.GoToState(this, value ? "CheckedNormal" : "Normal", true);
+        }
+
+        private void UpdateIsBlackout(bool value)
+        {
+            this.IsEnabled = !value;
+
+            VisualStateManager.GoToState(this, this.IsSelected ? "CheckedBlackouted" : "Blackouted", true);
+        }
+
+        private void UpdateIsDisable(bool value)
+        {
+            this.IsEnabled = !value;
+
+            VisualStateManager.GoToState(this, this.IsSelected ? "CheckedDisabled" : "Disabled", true);
+        }
+
+        private void UpdateIsWeekend(bool value)
+        {
+            VisualStateManager.GoToState(this, value ? "IsWeekendTrue" : "IsWeekendFalse", true);
+        }
+
+        private void UpdateIsToday(bool value)
+        {
+            VisualStateManager.GoToState(this, value ? "IsToodayTrue" : "IsToodayFalse", true);
+        }
+
+        public event RoutedEventHandler Selected;
 
         public ProCalendarToggleButton()
         {
             this.DefaultStyleKey = typeof(ProCalendarToggleButton);
 
+            this.PointerPressed -= OnPointerPressed;
+            this.PointerReleased -= OnPointerReleased;
+            this.PointerEntered -= OnPointerEntered;
+            this.PointerExited -= OnPointerExited;
+
             this.PointerPressed += OnPointerPressed;
             this.PointerReleased += OnPointerReleased;
             this.PointerEntered += OnPointerEntered;
             this.PointerExited += OnPointerExited;
-
-            this.DataContextChanged += OnDataContextChanged;
-
-            this.Loaded += OnLoaded;
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            UpdateStates();
-        }
-
-        private void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            dataContext = args.NewValue as DateTimeModel;
-            if (dataContext == null) return;
-
-            dataContext.DateTimeModelChanged += (s, e) =>
-            {
-                UpdateStates();
-            };
-        }
         private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, dataContext.IsSelected ? "CheckedPressed" : "Pressed", true);
+            VisualStateManager.GoToState(this, this.IsSelected ? "CheckedPressed" : "Pressed", true);
 
-            dataContext.IsSelected = !dataContext.IsSelected;
+            this.IsSelected = !this.IsSelected;
 
-            Checked?.Invoke(this, new CalendarToggleButtonEventArgs(dataContext.IsSelected));
+            Selected?.Invoke(this, null);
         }
 
         private void OnPointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, dataContext.IsSelected ? "CheckedPointerOver" : "PointerOver", true);
+            VisualStateManager.GoToState(this, this.IsSelected ? "CheckedPointerOver" : "PointerOver", true);
         }
 
         private void OnPointerExited(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, dataContext.IsSelected ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, this.IsSelected ? "CheckedNormal" : "Normal", true);
         }
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, dataContext.IsSelected ? "CheckedNormal" : "Normal", true);
+            VisualStateManager.GoToState(this, this.IsSelected ? "CheckedNormal" : "Normal", true);
         }
 
-        private void UpdateStates()
-        {
-            if (dataContext.IsSelected)
-                UpdateSelectedStates("Checked");
-            else
-                UpdateSelectedStates();
-
-            VisualStateManager.GoToState(this, dataContext.IsToday ? "IsToodayTrue" : "IsToodayFalse", true);
-            VisualStateManager.GoToState(this, dataContext.IsWeekend ? "IsWeekendTrue" : "IsWeekendFalse", true);
-        }
-
-        private void UpdateSelectedStates(string stateName = null)
-        {
-            if (dataContext.IsDisabled)
-            {
-                this.IsEnabled = false;
-                stateName += "Disabled";
-            }
-            else if (dataContext.IsBlackout)
-            {
-                this.IsEnabled = false;
-                stateName += "Blackouted";
-            }
-            else
-            {
-                this.IsEnabled = true;
-                stateName += "Normal";
-            }
-            VisualStateManager.GoToState(this, stateName, true);
-        }
+        public bool Equals(DateTime dateTime) =>
+            this.DateTime.Year == dateTime.Year &&
+            this.DateTime.Month == dateTime.Month &&
+            this.DateTime.Day == dateTime.Day;
     }
 }

@@ -11,106 +11,14 @@ using Windows.UI.Xaml;
 
 namespace ProCalendar.Core.BaseListDates
 {
-    //public interface IBaseModel : INotifyPropertyChanged
-    //{
-    //    void SetValue<V>(ref V oldValue, V newValue, [CallerMemberName]string propertyName = null);
-    //}
-
-    //public abstract class BaseModel : DependencyObject, IBaseModel
-    //{
-    //    #region INotifyPropertyChanged Members
-
-    //    public event PropertyChangedEventHandler PropertyChanged;
-
-    //    public virtual void SetValue<V>(ref V oldValue, V newValue, [CallerMemberName]string propertyName = null)
-    //    {
-    //        oldValue = newValue;
-    //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    //    }
-
-    //    #endregion
-    //}
-
-    public class DateTimeModelEventArgs : EventArgs
-    {
-        public object NewValue { get; }
-
-        public DateTimeModelEventArgs(object newValue)
-        {
-            NewValue = newValue;
-        }
-    }
-
-
     public class DateTimeModel
     {
-        public event EventHandler<DateTimeModelEventArgs> DateTimeModelChanged;
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set
-            {
-                _isSelected = value;
-                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
-            }
-        }
-        private bool _isSelected;
-
-        public bool IsBlackout
-        {
-            get => _isBlackout;
-            set
-            {
-                _isBlackout = value;
-                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
-            }
-        }
-        private bool _isBlackout;
-
-        public bool IsDisabled
-        {
-            get => _isDisabled;
-            set
-            {
-                _isDisabled = value;
-                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
-            }
-        }
-        private bool _isDisabled;
-
-        public bool IsWeekend
-        {
-            get => _isWeekend;
-            set
-            {
-                _isWeekend = value;
-                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
-            }
-        }
-        private bool _isWeekend;
-
-        public bool IsToday
-        {
-            get => _isToday;
-            set
-            {
-                _isToday = value;
-                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
-            }
-        }
-        private bool _isToday;
-
-        public DateTime DateTime
-        {
-            get => _dateTime;
-            set
-            {
-                _dateTime = value;
-                DateTimeModelChanged?.Invoke(this, new DateTimeModelEventArgs(value));
-            }
-        }
-        private DateTime _dateTime;
-
+        public bool IsSelected { get; set; }
+        public bool IsBlackout { get; set; }
+        public bool IsDisabled { get; set; }
+        public bool IsWeekend { get; set; }
+        public bool IsToday { get; set; }
+        public DateTime DateTime { get; set; }
         public bool Equals(DateTime dateTime) =>
             this.DateTime.Year == dateTime.Year &&
             this.DateTime.Month == dateTime.Month &&
