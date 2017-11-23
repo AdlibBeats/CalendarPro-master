@@ -91,7 +91,6 @@
                                 x:Name="ContentFlipView"
                                 Grid.Row="2"
                                 Height="216"
-                                ItemsSource="{Binding ListDates, Mode=OneWay}"
                                 Style="{StaticResource CalendarFlipView}">
                                 <FlipView.ItemTemplate>
                                     <DataTemplate>

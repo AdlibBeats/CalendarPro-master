@@ -19,10 +19,6 @@ namespace ProCalendar.Core.BaseListDates
         public bool IsWeekend { get; set; }
         public bool IsToday { get; set; }
         public DateTime DateTime { get; set; }
-        public bool Equals(DateTime dateTime) =>
-            this.DateTime.Year == dateTime.Year &&
-            this.DateTime.Month == dateTime.Month &&
-            this.DateTime.Day == dateTime.Day;
     }
 
     public class BaseListDates<T>

@@ -26,7 +26,7 @@ namespace ProCalendar.UI.Controls
 
             UpdateItemsPanelRoot();
 
-            UpdateItemsSource();
+            UpdateItemsSource(this.ItemsSource);
         }
 
         private void UpdateItemsPanelRoot()
@@ -43,9 +43,11 @@ namespace ProCalendar.UI.Controls
             }
         }
 
-        private void UpdateItemsSource()
+        private void UpdateItemsSource(object value)
         {
-            var itemsSource = this.ItemsSource as IEnumerable<object>;
+            if (this.ItemsPanelRoot == null) return;
+            
+            var itemsSource = value as IEnumerable<object>;
             if (itemsSource == null) return;
 
             int column = 0;
@@ -57,7 +59,10 @@ namespace ProCalendar.UI.Controls
 
             for (int i = 0; i < count; i++)
             {
-                var content = LoadItemTemplateContent(column, row, itemsSource.ElementAt(i));
+                var dataContext = itemsSource.ElementAtOrDefault(i);
+                if (dataContext == null) continue;
+
+                var content = LoadItemTemplateContent(column, row, dataContext);
                 if (content == null) return;
                 
                 this.ItemsPanelRoot.Children.Add(content);
@@ -76,7 +81,9 @@ namespace ProCalendar.UI.Controls
 
         private FrameworkElement LoadItemTemplateContent(int gridColumn, int gridRow, object dataContext)
         {
-            var frameworkElement = this.ItemTemplate?.LoadContent() as FrameworkElement;
+            if (this.ItemTemplate == null) return null;
+
+            var frameworkElement = this.ItemTemplate.LoadContent() as FrameworkElement;
             if (frameworkElement == null) return null;
 
             frameworkElement.Width = this.ItemWidth;
@@ -84,7 +91,7 @@ namespace ProCalendar.UI.Controls
             frameworkElement.HorizontalAlignment = this.ItemHorizontalAlignment;
             frameworkElement.VerticalAlignment = this.ItemVerticalAlignment;
             frameworkElement.Margin = this.ItemMargin;
-            frameworkElement.DataContext = dataContext;
+            //frameworkElement.DataContext = dataContext;
 
             Grid.SetColumn(frameworkElement, gridColumn);
             Grid.SetRow(frameworkElement, gridRow);
@@ -98,11 +105,16 @@ namespace ProCalendar.UI.Controls
             control.Background = this.ItemBackground;
             control.Padding = this.ItemPadding;
 
-            var proCalendarToggleButton = control as ProCalendarToggleButton;
-            if (proCalendarToggleButton == null) return control;
-
             var dateTimeModel = dataContext as DateTimeModel;
             if (dateTimeModel == null) return control;
+
+            var contentControl = control as ContentControl;
+            if (contentControl == null) return control;
+
+            contentControl.Content = dateTimeModel.DateTime.ToString("ddd");
+
+            var proCalendarToggleButton = contentControl as ProCalendarToggleButton;
+            if (proCalendarToggleButton == null) return contentControl;
             
             proCalendarToggleButton.IsSelected = dateTimeModel.IsSelected;
             proCalendarToggleButton.IsBlackout = dateTimeModel.IsBlackout;
@@ -263,7 +275,15 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.RegisterAttached("ItemsSource", typeof(object), typeof(AdaptiveGridView), new PropertyMetadata(null));
+            DependencyProperty.RegisterAttached("ItemsSource", typeof(object), typeof(AdaptiveGridView), new PropertyMetadata(null, OnItemsSourceChanged));
+
+        private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var adaptiveGridView = d as AdaptiveGridView;
+            if (adaptiveGridView == null) return;
+
+            adaptiveGridView.UpdateItemsSource(e.NewValue);
+        }
 
         #endregion
 

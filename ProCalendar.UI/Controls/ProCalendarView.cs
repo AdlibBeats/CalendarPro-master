@@ -32,25 +32,36 @@ namespace ProCalendar.UI.Controls
         {
             base.OnApplyTemplate();
 
-            var daysOfWeekContent = this.GetTemplateChild("DaysOfWeekContent") as AdaptiveGridView;
-            if (daysOfWeekContent == null) return;
-
-            daysOfWeekContent.ItemsSource = new ListDates().ContentDays;
-
+            UpdateDaysOfWeekContent("DaysOfWeekContent");
             UpdateContentTemplateRoot("ContentFlipView");
 
             UpdateNavigationButtons("PreviousButtonVertical", -1, i => i.SelectedIndex > 0);
             UpdateNavigationButtons("NextButtonVertical", 1, i => i.Items.Count - 1 > i.SelectedIndex);
         }
 
+        private void UpdateDaysOfWeekContent(string childName)
+        {
+            this.DaysOfWeekContent = this.GetTemplateChild(childName) as AdaptiveGridView;
+            if (this.DaysOfWeekContent == null) return;
+
+            this.DaysOfWeekContent.ItemsSource = new ListDates().ContentDays;
+        }
+
         private void UpdateContentTemplateRoot(string childName)
         {
-            this.ContentTemplateRoot = this.GetTemplateChild(childName) as Selector;
+            this.ContentTemplateRoot = this.GetTemplateChild(childName) as FlipView;
             if (ContentTemplateRoot == null) return;
 
-            this.ContentTemplateRoot.DataContext = new ProListDates();
+            this.ContentTemplateRoot.ItemsSource = new ProListDates().ListDates;
             this.ContentTemplateRoot.Loaded += ContentTemplateRoot_Loaded;
             this.ContentTemplateRoot.SelectionChanged += ContentTemplateRoot_SelectionChanged;
+
+            //...........................................................................................................................................................................................
+
+            //if (this.ContentTemplateRoot.ItemTemplate == null) return;
+
+            //var frameworkElement = this.ContentTemplateRoot.ItemTemplate.LoadContent() as FrameworkElement;
+            //if (frameworkElement == null) return;
         }
 
         private void UpdateNavigationButtons(string childName, int navigatedIndex, Predicate<Selector> func)
@@ -107,20 +118,28 @@ namespace ProCalendar.UI.Controls
             }
         }
 
+        private Grid GetItemsPanelRootFromIndex(int index)
+        {
+            var selectorItem = this.ItemsPanelRoot.Children.ElementAtOrDefault(index) as SelectorItem;
+            if (selectorItem == null) return null;
+
+            var adaptiveGridView = selectorItem.ContentTemplateRoot as AdaptiveGridView;
+            if (adaptiveGridView == null) return null;
+
+            var itemsPanelRoot = adaptiveGridView.ItemsPanelRoot as Grid;
+            if (itemsPanelRoot == null) return null;
+
+            return itemsPanelRoot;
+        }
+
         private void OnScrollingUpdateChildren()
         {
             int index = _contentTemplateRoot_CurrentIndex < this.ContentTemplateRoot.SelectedIndex ? -1 : 1;
-
-            var adaptiveGridView = (this.ItemsPanelRoot.Children.ElementAtOrDefault(this.ContentTemplateRoot.SelectedIndex + index) as SelectorItem).ContentTemplateRoot as AdaptiveGridView;
-            if (adaptiveGridView == null) return;
-
-            var currentAdaptiveGridView = (this.ItemsPanelRoot.Children.ElementAtOrDefault(this.ContentTemplateRoot.SelectedIndex) as SelectorItem).ContentTemplateRoot as AdaptiveGridView;
-            if (currentAdaptiveGridView == null) return;
-
-            var itemsPanelRoot = adaptiveGridView.ItemsPanelRoot as Grid;
+            
+            var itemsPanelRoot = GetItemsPanelRootFromIndex(this.ContentTemplateRoot.SelectedIndex + index);
             if (itemsPanelRoot == null) return;
 
-            var currentItemsPanelRoot = currentAdaptiveGridView.ItemsPanelRoot as Grid;
+            var currentItemsPanelRoot = GetItemsPanelRootFromIndex(this.ContentTemplateRoot.SelectedIndex);
             if (currentItemsPanelRoot == null) return;
 
             for (int i = 0; i < itemsPanelRoot.Children.Count; i++)
@@ -130,7 +149,14 @@ namespace ProCalendar.UI.Controls
 
                 if (proCalendarToggleButton.IsSelected)
                 {
-                    var currentProCalendarToggleButton = currentItemsPanelRoot.Children.FirstOrDefault(j => (j as ProCalendarToggleButton).Equals(proCalendarToggleButton.DateTime)) as ProCalendarToggleButton;
+                    var currentProCalendarToggleButton = currentItemsPanelRoot.Children.FirstOrDefault(j =>
+                    {
+                        var toggleButton = j as ProCalendarToggleButton;
+                        if (toggleButton == null) return false;
+
+                        return toggleButton.Equals(proCalendarToggleButton.DateTime);
+                    }) as ProCalendarToggleButton;
+
                     if (currentProCalendarToggleButton == null) continue;
 
                     currentProCalendarToggleButton.IsSelected = true;
@@ -145,10 +171,7 @@ namespace ProCalendar.UI.Controls
 
             for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
             {
-                var adaptiveGridView = (this.ItemsPanelRoot.Children.ElementAtOrDefault(i) as SelectorItem).ContentTemplateRoot as AdaptiveGridView;
-                if (adaptiveGridView == null) return;
-
-                var itemsPanelRoot = adaptiveGridView.ItemsPanelRoot as Grid;
+                var itemsPanelRoot = GetItemsPanelRootFromIndex(i);
                 if (itemsPanelRoot == null) return;
 
                 for (int j = 0; j < itemsPanelRoot.Children.Count; j++)
@@ -196,10 +219,7 @@ namespace ProCalendar.UI.Controls
 
             for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
             {
-                var adaptiveGridView = (this.ItemsPanelRoot.Children.ElementAtOrDefault(i) as SelectorItem).ContentTemplateRoot as AdaptiveGridView;
-                if (adaptiveGridView == null) return;
-
-                var itemsPanelRoot = adaptiveGridView.ItemsPanelRoot as Grid;
+                var itemsPanelRoot = GetItemsPanelRootFromIndex(i);
                 if (itemsPanelRoot == null) return;
 
                 for (int j = 0; j < itemsPanelRoot.Children.Count; j++)
@@ -237,7 +257,7 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateNoneMode(int index, ProCalendarToggleButton proCalendarToggleButton)
         {
-            //TODO:
+            //TODO: UpdateNoneMode();
         }
 
         private void UpdateSingleMode(int index, ProCalendarToggleButton proCalendarToggleButton)
@@ -250,12 +270,12 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateMultipleMode(int index, ProCalendarToggleButton proCalendarToggleButton)
         {
-            //TODO:
+            //TODO: UpdateMultipleMode();
         }
 
         private void UpdateExtendedMode(int index, ProCalendarToggleButton proCalendarToggleButton)
         {
-            //TODO:
+            //TODO: UpdateExtendedMode();
         }
 
         public bool IsContentTemplateRootLoaded
@@ -266,6 +286,15 @@ namespace ProCalendar.UI.Controls
 
         public static readonly DependencyProperty IsContentTemplateRootLoadedProperty =
             DependencyProperty.Register("IsContentTemplateRootLoaded", typeof(bool), typeof(ProCalendarView), new PropertyMetadata(false));
+
+        public AdaptiveGridView DaysOfWeekContent
+        {
+            get { return (AdaptiveGridView)GetValue(DaysOfWeekContentProperty); }
+            private set { SetValue(DaysOfWeekContentProperty, value); }
+        }
+
+        public static readonly DependencyProperty DaysOfWeekContentProperty =
+            DependencyProperty.Register("DaysOfWeekContent", typeof(AdaptiveGridView), typeof(ProCalendarView), new PropertyMetadata(null));
 
         public Selector ContentTemplateRoot
         {
@@ -301,6 +330,14 @@ namespace ProCalendar.UI.Controls
         }
 
         public static readonly DependencyProperty SelectionModeProperty =
-            DependencyProperty.Register("SelectionMode", typeof(ProCalendarViewSelectionMode), typeof(ProCalendarView), new PropertyMetadata(ProCalendarViewSelectionMode.Single));
+            DependencyProperty.Register("SelectionMode", typeof(ProCalendarViewSelectionMode), typeof(ProCalendarView), new PropertyMetadata(ProCalendarViewSelectionMode.Single, OnSelectionModeChanged));
+
+        private static void OnSelectionModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var proCalendarView = d as ProCalendarView;
+            if (proCalendarView == null) return;
+
+            //TODO: UpdateSelectionMode(newValue);
+        }
     }
 }
