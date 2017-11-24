@@ -91,12 +91,11 @@ namespace ProCalendar.UI.Controls
 
         private void OnLoadingUpdateChildren()
         {
-            this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot;
-            if (this.ItemsPanelRoot == null) return;
+            if (this.ContentTemplateRoot.ItemsPanelRoot == null) return;
 
-            for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
+            for (int i = 0; i < this.ContentTemplateRoot.ItemsPanelRoot.Children.Count; i++)
             {
-                var selectorItem = this.ItemsPanelRoot.Children.ElementAtOrDefault(i) as SelectorItem;
+                var selectorItem = this.ContentTemplateRoot.ItemsPanelRoot.Children.ElementAtOrDefault(i) as SelectorItem;
                 if (selectorItem == null) return;
 
                 var adaptiveGridView = selectorItem.ContentTemplateRoot as AdaptiveGridView;
@@ -121,9 +120,9 @@ namespace ProCalendar.UI.Controls
 
         private Panel GetItemsPanelRootFromIndex(int index)
         {
-            if (this.ItemsPanelRoot == null) return null;
+            if (this.ContentTemplateRoot.ItemsPanelRoot == null) return null;
 
-            var selectorItem = this.ItemsPanelRoot.Children.ElementAtOrDefault(index) as SelectorItem;
+            var selectorItem = this.ContentTemplateRoot.ItemsPanelRoot.Children.ElementAtOrDefault(index) as SelectorItem;
             if (selectorItem == null) return null;
 
             var adaptiveGridView = selectorItem.ContentTemplateRoot as AdaptiveGridView;
@@ -172,7 +171,7 @@ namespace ProCalendar.UI.Controls
         {
             int index = 0;
 
-            for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
+            for (int i = 0; i < this.ContentTemplateRoot.ItemsPanelRoot.Children.Count; i++)
             {
                 var itemsPanelRoot = GetItemsPanelRootFromIndex(i);
                 if (itemsPanelRoot == null) return;
@@ -220,7 +219,7 @@ namespace ProCalendar.UI.Controls
         {
             int index = 0;
 
-            for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
+            for (int i = 0; i < this.ContentTemplateRoot.ItemsPanelRoot.Children.Count; i++)
             {
                 var itemsPanelRoot = GetItemsPanelRootFromIndex(i);
                 if (itemsPanelRoot == null) return;
@@ -307,15 +306,6 @@ namespace ProCalendar.UI.Controls
 
         public static readonly DependencyProperty ContentTemplateRootProperty =
             DependencyProperty.Register("ContentTemplateRoot", typeof(Selector), typeof(ProCalendarView), new PropertyMetadata(null));
-
-        public Panel ItemsPanelRoot
-        {
-            get { return (Panel)GetValue(ItemsPanelRootProperty); }
-            private set { SetValue(ItemsPanelRootProperty, value); }
-        }
-
-        public static readonly DependencyProperty ItemsPanelRootProperty =
-            DependencyProperty.Register("ItemsPanelRoot", typeof(Panel), typeof(ProCalendarView), new PropertyMetadata(null));
 
         public ProCalendarToggleButton SelectedItem
         {
