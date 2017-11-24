@@ -126,12 +126,10 @@ namespace ProCalendar.UI.Controls
             proCalendarToggleButton.Selected -= OnSelected;
             proCalendarToggleButton.Selected += OnSelected;
 
-            return proCalendarToggleButton;
-        }
+            void OnSelected(object sender, RoutedEventArgs e) =>
+                SelectionChanged?.Invoke(sender, null);
 
-        private void OnSelected(object sender, RoutedEventArgs e)
-        {
-            SelectionChanged?.Invoke(sender, null);
+            return proCalendarToggleButton;
         }
 
         #region Dependency Properties

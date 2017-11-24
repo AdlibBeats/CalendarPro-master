@@ -40,6 +40,7 @@ namespace ProCalendar.UI.Controls
             _loadingButton = this.GetTemplateChild("LoadingButton") as Button;
             if (_loadingButton == null) return;
 
+            _loadingButton.Tapped -= loadingButton_Tapped;
             _loadingButton.Tapped += loadingButton_Tapped;
 
             _dateText = this.GetTemplateChild("DateText") as TextBlock;
@@ -48,7 +49,9 @@ namespace ProCalendar.UI.Controls
             _proCalendarView = this.GetTemplateChild("ProCalendarView") as ProCalendarView;
             if (_proCalendarView == null) return;
 
+            _proCalendarView.SelectionChanged -= ProCalendar_SelectionChanged;
             _proCalendarView.SelectionChanged += ProCalendar_SelectionChanged;
+            _proCalendarView.UnselectionChanged -= ProCalendar_UnselectionChanged;
             _proCalendarView.UnselectionChanged += ProCalendar_UnselectionChanged;
         }
 

@@ -49,31 +49,31 @@ namespace ProCalendar.UI.Controls
 
         private void UpdateContentTemplateRoot(string childName)
         {
-            this.ContentTemplateRoot = this.GetTemplateChild(childName) as FlipView;
+            this.ContentTemplateRoot = this.GetTemplateChild(childName) as Selector;
             if (ContentTemplateRoot == null) return;
-
+            
             this.ContentTemplateRoot.ItemsSource = new ProListDates().ListDates;
+
+            this.ContentTemplateRoot.Loaded -= ContentTemplateRoot_Loaded;
             this.ContentTemplateRoot.Loaded += ContentTemplateRoot_Loaded;
+
+            this.ContentTemplateRoot.SelectionChanged -= ContentTemplateRoot_SelectionChanged;
             this.ContentTemplateRoot.SelectionChanged += ContentTemplateRoot_SelectionChanged;
-
-            //...........................................................................................................................................................................................
-
-            //if (this.ContentTemplateRoot.ItemTemplate == null) return;
-
-            //var frameworkElement = this.ContentTemplateRoot.ItemTemplate.LoadContent() as FrameworkElement;
-            //if (frameworkElement == null) return;
         }
 
         private void UpdateNavigationButtons(string childName, int navigatedIndex, Predicate<Selector> func)
         {
-            var navigationButton = this.GetTemplateChild(childName) as Button;
+            var navigationButton = this.GetTemplateChild(childName) as ButtonBase;
             if (navigationButton == null) return;
 
-            navigationButton.Click += (s, e) =>
+            navigationButton.Click -= OnNavigationButtonClick;
+            navigationButton.Click += OnNavigationButtonClick;
+
+            void OnNavigationButtonClick(object sender, RoutedEventArgs e)
             {
                 if (func.Invoke(ContentTemplateRoot))
                     ContentTemplateRoot.SelectedIndex += navigatedIndex;
-            };
+            }
         }
 
         private void ContentTemplateRoot_Loaded(object sender, RoutedEventArgs e)
@@ -91,7 +91,7 @@ namespace ProCalendar.UI.Controls
 
         private void OnLoadingUpdateChildren()
         {
-            this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot as StackPanel;
+            this.ItemsPanelRoot = this.ContentTemplateRoot.ItemsPanelRoot;
             if (this.ItemsPanelRoot == null) return;
 
             for (int i = 0; i < this.ItemsPanelRoot.Children.Count; i++)
@@ -102,6 +102,7 @@ namespace ProCalendar.UI.Controls
                 var adaptiveGridView = selectorItem.ContentTemplateRoot as AdaptiveGridView;
                 if (adaptiveGridView == null) return;
 
+                adaptiveGridView.SelectionChanged -= AdaptiveGridView_SelectionChanged;
                 adaptiveGridView.SelectionChanged += AdaptiveGridView_SelectionChanged;
             }
         }
@@ -118,15 +119,17 @@ namespace ProCalendar.UI.Controls
             }
         }
 
-        private Grid GetItemsPanelRootFromIndex(int index)
+        private Panel GetItemsPanelRootFromIndex(int index)
         {
+            if (this.ItemsPanelRoot == null) return null;
+
             var selectorItem = this.ItemsPanelRoot.Children.ElementAtOrDefault(index) as SelectorItem;
             if (selectorItem == null) return null;
 
             var adaptiveGridView = selectorItem.ContentTemplateRoot as AdaptiveGridView;
             if (adaptiveGridView == null) return null;
 
-            var itemsPanelRoot = adaptiveGridView.ItemsPanelRoot as Grid;
+            var itemsPanelRoot = adaptiveGridView.ItemsPanelRoot as Panel;
             if (itemsPanelRoot == null) return null;
 
             return itemsPanelRoot;
@@ -305,14 +308,14 @@ namespace ProCalendar.UI.Controls
         public static readonly DependencyProperty ContentTemplateRootProperty =
             DependencyProperty.Register("ContentTemplateRoot", typeof(Selector), typeof(ProCalendarView), new PropertyMetadata(null));
 
-        public StackPanel ItemsPanelRoot
+        public Panel ItemsPanelRoot
         {
-            get { return (StackPanel)GetValue(ItemsPanelRootProperty); }
+            get { return (Panel)GetValue(ItemsPanelRootProperty); }
             private set { SetValue(ItemsPanelRootProperty, value); }
         }
 
         public static readonly DependencyProperty ItemsPanelRootProperty =
-            DependencyProperty.Register("ItemsPanelRoot", typeof(StackPanel), typeof(ProCalendarView), new PropertyMetadata(null));
+            DependencyProperty.Register("ItemsPanelRoot", typeof(Panel), typeof(ProCalendarView), new PropertyMetadata(null));
 
         public ProCalendarToggleButton SelectedItem
         {
