@@ -149,20 +149,35 @@ namespace ProCalendar.UI.Controls
                 var proCalendarToggleButton = itemsPanelRoot.Children.ElementAtOrDefault(i) as ProCalendarToggleButton;
                 if (proCalendarToggleButton == null) return;
 
+                var currentProCalendarToggleButton = currentItemsPanelRoot.Children.FirstOrDefault(j =>
+                {
+                    var toggleButton = j as ProCalendarToggleButton;
+                    if (toggleButton == null) return false;
+
+                    return toggleButton.Equals(proCalendarToggleButton.DateTime);
+                }) as ProCalendarToggleButton;
+
+                if (currentProCalendarToggleButton == null) continue;
+
                 if (proCalendarToggleButton.IsSelected)
                 {
-                    var currentProCalendarToggleButton = currentItemsPanelRoot.Children.FirstOrDefault(j =>
-                    {
-                        var toggleButton = j as ProCalendarToggleButton;
-                        if (toggleButton == null) return false;
-
-                        return toggleButton.Equals(proCalendarToggleButton.DateTime);
-                    }) as ProCalendarToggleButton;
-
-                    if (currentProCalendarToggleButton == null) continue;
-
                     currentProCalendarToggleButton.IsSelected = true;
                     proCalendarToggleButton.IsSelected = false;
+                }
+                else if (proCalendarToggleButton.IsToday)
+                {
+                    currentProCalendarToggleButton.IsToday = true;
+                    proCalendarToggleButton.IsToday = false;
+                }
+                else if (proCalendarToggleButton.IsDisabled)
+                {
+                    currentProCalendarToggleButton.IsDisabled = true;
+                    proCalendarToggleButton.IsDisabled = false;
+                }
+                else if (proCalendarToggleButton.IsBlackout)
+                {
+                    currentProCalendarToggleButton.IsBlackout = true;
+                    proCalendarToggleButton.IsBlackout = false;
                 }
             }
         }
