@@ -96,10 +96,10 @@ namespace ProCalendar.UI.Controls
             for (int i = 0; i < this.ContentTemplateRoot.ItemsPanelRoot.Children.Count; i++)
             {
                 var selectorItem = this.ContentTemplateRoot.ItemsPanelRoot.Children.ElementAtOrDefault(i) as SelectorItem;
-                if (selectorItem == null) return;
+                if (selectorItem == null) continue;
 
                 var adaptiveGridView = selectorItem.ContentTemplateRoot as AdaptiveGridView;
-                if (adaptiveGridView == null) return;
+                if (adaptiveGridView == null) continue;
 
                 adaptiveGridView.SelectionChanged -= AdaptiveGridView_SelectionChanged;
                 adaptiveGridView.SelectionChanged += AdaptiveGridView_SelectionChanged;
@@ -147,7 +147,7 @@ namespace ProCalendar.UI.Controls
             for (int i = 0; i < itemsPanelRoot.Children.Count; i++)
             {
                 var proCalendarToggleButton = itemsPanelRoot.Children.ElementAtOrDefault(i) as ProCalendarToggleButton;
-                if (proCalendarToggleButton == null) return;
+                if (proCalendarToggleButton == null) continue;
 
                 var currentProCalendarToggleButton = currentItemsPanelRoot.Children.FirstOrDefault(j =>
                 {
@@ -179,6 +179,8 @@ namespace ProCalendar.UI.Controls
                     currentProCalendarToggleButton.IsBlackout = true;
                     proCalendarToggleButton.IsBlackout = false;
                 }
+                else
+                    continue;
             }
         }
 
@@ -189,12 +191,12 @@ namespace ProCalendar.UI.Controls
             for (int i = 0; i < this.ContentTemplateRoot.ItemsPanelRoot.Children.Count; i++)
             {
                 var itemsPanelRoot = GetItemsPanelRootFromIndex(i);
-                if (itemsPanelRoot == null) return;
+                if (itemsPanelRoot == null) continue;
 
                 for (int j = 0; j < itemsPanelRoot.Children.Count; j++)
                 {
                     var proCalendarToggleButton = itemsPanelRoot.Children.ElementAtOrDefault(j) as ProCalendarToggleButton;
-                    if (proCalendarToggleButton == null) return;
+                    if (proCalendarToggleButton == null) continue;
 
                     if (func.Invoke(proCalendarToggleButton))
                     {
@@ -202,6 +204,8 @@ namespace ProCalendar.UI.Controls
                         if (proCalendarToggleButton.DateTime.Day > 20)
                             return;
                     }
+                    else
+                        continue;
                 }
                 index++;
             }
@@ -237,38 +241,43 @@ namespace ProCalendar.UI.Controls
             for (int i = 0; i < this.ContentTemplateRoot.ItemsPanelRoot.Children.Count; i++)
             {
                 var itemsPanelRoot = GetItemsPanelRootFromIndex(i);
-                if (itemsPanelRoot == null) return;
+                if (itemsPanelRoot == null) continue;
 
                 for (int j = 0; j < itemsPanelRoot.Children.Count; j++)
                 {
                     var proCalendarToggleButton = itemsPanelRoot.Children.ElementAtOrDefault(j) as ProCalendarToggleButton;
-                    if (proCalendarToggleButton == null) return;
+                    if (proCalendarToggleButton == null) continue;
 
-                    switch (this.SelectionMode)
-                    {
-                        case ProCalendarViewSelectionMode.None:
-                            {
-                                UpdateNoneMode(index, proCalendarToggleButton);
-                                break;
-                            }
-                        case ProCalendarViewSelectionMode.Single:
-                            {
-                                UpdateSingleMode(index, proCalendarToggleButton);
-                                break;
-                            }
-                        case ProCalendarViewSelectionMode.Multiple:
-                            {
-                                UpdateMultipleMode(index, proCalendarToggleButton);
-                                break;
-                            }
-                        case ProCalendarViewSelectionMode.Extended:
-                            {
-                                UpdateExtendedMode(index, proCalendarToggleButton);
-                                break;
-                            }
-                    }
+                    ChangeSelectedMode(index, proCalendarToggleButton);
                 }
                 index++;
+            }
+        }
+
+        private void ChangeSelectedMode(int index, ProCalendarToggleButton proCalendarToggleButton)
+        {
+            switch (this.SelectionMode)
+            {
+                case ProCalendarViewSelectionMode.None:
+                    {
+                        UpdateNoneMode(index, proCalendarToggleButton);
+                        break;
+                    }
+                case ProCalendarViewSelectionMode.Single:
+                    {
+                        UpdateSingleMode(index, proCalendarToggleButton);
+                        break;
+                    }
+                case ProCalendarViewSelectionMode.Multiple:
+                    {
+                        UpdateMultipleMode(index, proCalendarToggleButton);
+                        break;
+                    }
+                case ProCalendarViewSelectionMode.Extended:
+                    {
+                        UpdateExtendedMode(index, proCalendarToggleButton);
+                        break;
+                    }
             }
         }
 
